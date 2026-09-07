@@ -1,0 +1,2 @@
+# QuickBuy-HQ
+E-commerce
