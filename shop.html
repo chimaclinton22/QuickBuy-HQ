@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop All Products – QuickBuy HQ</title>
+  <meta name="description" content="Browse our full collection of quality products at QuickBuy HQ. Fast delivery across Nigeria." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .product-card { transition: all 0.25s ease; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
+    .filter-active { background-color: #087EBC !important; color: white !important; border-color: #087EBC !important; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Announcement Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2.5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-y-1">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-orange-400"></i>
+        <span>Free Shipping on Orders Over ₦50,000</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>Trusted by 100,000+ Happy Customers</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-headset text-orange-400"></i>
+        <span>24/7 Customer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex-shrink-0">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+
+        <div class="hidden md:flex flex-1 max-w-xl mx-8">
+          <div class="relative w-full flex">
+            <input id="search-input" type="text" placeholder="Search products, brands..." 
+                   class="w-full bg-slate-100 border border-transparent focus:border-brand-blue focus:bg-white focus:ring-2 focus:ring-brand-blue/20 rounded-l-xl py-2.5 pl-4 pr-4 text-sm outline-none transition">
+            <button id="search-btn" class="bg-brand-blue hover:bg-brand-dark text-white px-5 rounded-r-xl transition">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5 text-slate-700">
+          <a href="#" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-regular fa-heart text-xl"></i>
+            <span class="text-[11px] mt-0.5">Wishlist</span>
+            <span id="wishlist-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="cart.html" class="flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[11px] mt-0.5 hidden sm:block">Cart</span>
+            <span id="cart-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="account.html" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition">
+            <i class="fa-regular fa-user text-xl"></i>
+            <span class="text-[11px] mt-0.5">Account</span>
+          </a>
+          <button id="mobile-menu-btn" class="md:hidden text-2xl text-slate-700">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Search -->
+      <div class="md:hidden pb-3">
+        <div class="flex">
+          <input id="mobile-search-input" type="text" placeholder="Search products..." 
+                 class="w-full bg-slate-100 rounded-l-lg py-2.5 px-3 text-sm outline-none">
+          <button id="mobile-search-btn" class="bg-brand-blue text-white px-4 rounded-r-lg">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 py-3 border-t border-slate-100 text-sm font-medium text-slate-600">
+        <a href="shop.html" class="text-brand-blue font-semibold">Shop</a>
+        <a href="index.html#categories" class="hover:text-brand-blue transition">Categories</a>
+        <a href="index.html#featured" class="hover:text-brand-blue transition">Deals</a>
+        <a href="track-order.html" class="hover:text-brand-blue transition">Track Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <div class="bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <nav class="text-sm text-slate-500 mb-2">
+            <a href="index.html" class="hover:text-brand-blue">Home</a>
+            <span class="mx-2">/</span>
+            <span class="text-slate-800 font-medium">Shop</span>
+          </nav>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900">All Products</h1>
+          <p id="results-count" class="text-sm text-slate-500 mt-1">Loading products...</p>
+        </div>
+
+        <!-- Sort -->
+        <div class="flex items-center gap-3">
+          <label class="text-sm text-slate-600 font-medium">Sort by:</label>
+          <select id="sort-select" class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
+            <option value="newest">Newest</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="name">Name A-Z</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- ==================== SIDEBAR FILTERS ==================== -->
+      <aside class="lg:w-64 flex-shrink-0">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sticky top-28">
+          
+          <!-- Mobile Filter Toggle -->
+          <div class="lg:hidden mb-4">
+            <button id="filter-toggle" class="w-full flex items-center justify-between bg-slate-100 rounded-xl px-4 py-3 font-semibold text-sm">
+              <span><i class="fa-solid fa-sliders mr-2"></i> Filters</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+          </div>
+
+          <div id="filters-panel" class="space-y-8 hidden lg:block">
+
+            <!-- Categories -->
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 mb-4 uppercase tracking-wider">Categories</h3>
+              <div id="category-filters" class="space-y-2">
+                <button data-category="" class="category-btn filter-active w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition">
+                  All Categories
+                </button>
+                <!-- Dynamic categories will be inserted here -->
+              </div>
+            </div>
+
+            <!-- Price Range -->
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 mb-4 uppercase tracking-wider">Price Range</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <input id="min-price" type="number" placeholder="Min" 
+                         class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-blue">
+                  <span class="text-slate-400">–</span>
+                  <input id="max-price" type="number" placeholder="Max" 
+                         class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-blue">
+                </div>
+                <button id="apply-price" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2 rounded-lg transition">
+                  Apply
+                </button>
+              </div>
+            </div>
+
+            <!-- Availability -->
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 mb-4 uppercase tracking-wider">Availability</h3>
+              <div class="space-y-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" id="in-stock" class="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue" checked>
+                  <span class="text-sm">In Stock</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" id="out-of-stock" class="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue">
+                  <span class="text-sm">Out of Stock</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Clear Filters -->
+            <button id="clear-filters" class="w-full text-sm font-semibold text-red-500 hover:text-red-600 py-2">
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ==================== PRODUCT GRID ==================== -->
+      <main class="flex-1">
+        <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <!-- Loading state -->
+          <div class="col-span-full py-24 text-center text-slate-400">
+            <i class="fa-solid fa-spinner fa-spin text-3xl mb-4"></i>
+            <p class="text-lg">Loading products from Supabase...</p>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden col-span-full py-24 text-center">
+          <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-5">
+            <i class="fa-solid fa-box-open text-3xl text-slate-400"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-2">No products found</h3>
+          <p class="text-slate-500 mb-6">Try adjusting your filters or search term</p>
+          <button id="reset-search" class="bg-brand-blue hover:bg-brand-dark text-white font-semibold px-6 py-2.5 rounded-xl transition">
+            Clear Filters
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer (same as homepage) -->
+  <footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div class="lg:col-span-1">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-10 mb-4 object-contain">
+          <p class="text-sm leading-relaxed mb-5">Your trusted online store for quality products, great prices and fast delivery across Nigeria.</p>
+          <div class="flex gap-4 text-lg">
+            <a href="#" class="hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="hover:text-white transition"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="hover:text-white transition"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+            <li><a href="shop.html" class="hover:text-white transition">Shop</a></li>
+            <li><a href="index.html#categories" class="hover:text-white transition">Categories</a></li>
+            <li><a href="track-order.html" class="hover:text-white transition">Track Order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Customer Service</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition">Shipping Info</a></li>
+            <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
+            <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Contact Us</h4>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-2"><i class="fa-solid fa-phone mt-0.5 text-slate-500"></i><span>+234 801 234 5678</span></li>
+            <li class="flex items-start gap-2"><i class="fa-solid fa-envelope mt-0.5 text-slate-500"></i><span>support@quickbuyhq.com</span></li>
+            <li class="flex items-start gap-2"><i class="fa-solid fa-location-dot mt-0.5 text-slate-500"></i><span>Lagos, Nigeria</span></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Newsletter</h4>
+          <p class="text-sm mb-4">Get the latest deals and updates.</p>
+          <form class="space-y-3">
+            <input type="email" placeholder="Your email address" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-blue">
+            <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-lg transition text-sm">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-500">
+        <p>© 2026 QuickBuy HQ. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <span>Shop Smart</span><span>•</span><span>Shop Quick</span><span>•</span><span>Shop QuickBuy HQ</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========== STATE ==========
+    let allProducts = [];
+    let filteredProducts = [];
+    let currentCategory = '';
+    let currentSort = 'newest';
+    let cart = JSON.parse(localStorage.getItem('qb_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('qb_wishlist') || '[]');
+
+    function updateCounts() {
+      document.getElementById('cart-count').textContent = cart.length;
+      document.getElementById('wishlist-count').textContent = wishlist.length;
+    }
+
+    // ========== LOAD CATEGORIES ==========
+    async function loadCategories() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('categories')
+          .select('id, name, slug')
+          .eq('is_active', true)
+          .order('sort_order');
+
+        if (error) throw error;
+
+        const container = document.getElementById('category-filters');
+        
+        // Keep "All Categories" button
+        let html = `
+          <button data-category="" class="category-btn filter-active w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition">
+            All Categories
+          </button>`;
+
+        if (data) {
+          data.forEach(cat => {
+            html += `
+              <button data-category="${cat.slug}" class="category-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+                ${cat.name}
+              </button>`;
+          });
+        }
+
+        container.innerHTML = html;
+
+        // Add click listeners
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('filter-active'));
+            btn.classList.add('filter-active');
+            currentCategory = btn.dataset.category;
+            applyFilters();
+          });
+        });
+      } catch (err) {
+        console.error('Categories error:', err);
+      }
+    }
+
+    // ========== LOAD PRODUCTS ==========
+    async function loadProducts() {
+      const container = document.getElementById('products-container');
+      const emptyState = document.getElementById('empty-state');
+      
+      try {
+        const { data, error } = await supabaseClient
+          .from('products')
+          .select(`
+            id, name, slug, price, compare_at_price, discount_percentage,
+            rating, review_count, brand, status, created_at,
+            product_images (image_url, is_primary)
+          `)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        allProducts = data || [];
+        applyFilters();
+      } catch (err) {
+        console.error('Products error:', err);
+        container.innerHTML = `
+          <div class="col-span-full py-24 text-center text-red-500">
+            <p class="font-medium text-lg">Failed to load products</p>
+            <p class="text-sm mt-2">${err.message}</p>
+          </div>`;
+      }
+    }
+
+    // ========== APPLY FILTERS & SORT ==========
+    function applyFilters() {
+      const search = (document.getElementById('search-input')?.value || 
+                      document.getElementById('mobile-search-input')?.value || '').toLowerCase().trim();
+      const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+      const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
+
+      filteredProducts = allProducts.filter(p => {
+        // Search
+        const matchesSearch = !search || 
+          p.name.toLowerCase().includes(search) || 
+          (p.brand && p.brand.toLowerCase().includes(search));
+
+        // Category
+        const matchesCategory = !currentCategory || true; // We'll improve with category join later
+
+        // Price
+        const matchesPrice = p.price >= minPrice && p.price <= maxPrice;
+
+        return matchesSearch && matchesCategory && matchesPrice;
+      });
+
+      // Sort
+      filteredProducts.sort((a, b) => {
+        switch (currentSort) {
+          case 'price-low': return a.price - b.price;
+          case 'price-high': return b.price - a.price;
+          case 'rating': return (b.rating || 0) - (a.rating || 0);
+          case 'name': return a.name.localeCompare(b.name);
+          default: return new Date(b.created_at) - new Date(a.created_at);
+        }
+      });
+
+      renderProducts();
+    }
+
+    // ========== RENDER PRODUCTS ==========
+    function renderProducts() {
+      const container = document.getElementById('products-container');
+      const emptyState = document.getElementById('empty-state');
+      const resultsCount = document.getElementById('results-count');
+
+      resultsCount.textContent = `${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} found`;
+
+      if (filteredProducts.length === 0) {
+        container.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.classList.remove('hidden');
+
+      container.innerHTML = filteredProducts.map(prod => {
+        const primaryImage = prod.product_images?.find(img => img.is_primary)?.image_url 
+                          || prod.product_images?.[0]?.image_url 
+                          || 'https://placehold.co/400x400?text=No+Image';
+
+        const hasDiscount = prod.compare_at_price && prod.compare_at_price > prod.price;
+        const discount = hasDiscount 
+          ? Math.round(((prod.compare_at_price - prod.price) / prod.compare_at_price) * 100) 
+          : (prod.discount_percentage || 0);
+
+        return `
+          <div class="product-card bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+            <a href="product.html?id=${prod.id}" class="block">
+              <div class="relative aspect-square bg-slate-50 p-5">
+                ${discount > 0 ? `
+                  <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg z-10">
+                    -${discount}%
+                  </span>` : ''}
+                <button onclick="event.preventDefault(); toggleWishlist('${prod.id}')" 
+                        class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-slate-400 hover:text-red-500 transition z-10">
+                  <i class="fa-regular fa-heart"></i>
+                </button>
+                <img src="${primaryImage}" alt="${prod.name}" class="w-full h-full object-contain">
+              </div>
+            </a>
+
+            <div class="p-5">
+              <p class="text-xs text-slate-400 mb-1">${prod.brand || 'QuickBuy HQ'}</p>
+              <a href="product.html?id=${prod.id}">
+                <h3 class="font-semibold text-slate-800 line-clamp-2 mb-2 min-h-[48px] hover:text-brand-blue transition">
+                  ${prod.name}
+                </h3>
+              </a>
+
+              <div class="flex items-center gap-1.5 mb-3">
+                <div class="flex text-amber-400 text-sm">
+                  ${'★'.repeat(Math.floor(prod.rating || 4))}${'☆'.repeat(5 - Math.floor(prod.rating || 4))}
+                </div>
+                <span class="text-xs text-slate-400">(${prod.review_count || 0})</span>
+              </div>
+
+              <div class="flex items-baseline gap-2 mb-1">
+                <span class="text-xl font-bold text-slate-900">₦${Number(prod.price).toLocaleString()}</span>
+                ${hasDiscount ? `
+                  <span class="text-sm text-slate-400 line-through">₦${Number(prod.compare_at_price).toLocaleString()}</span>
+                ` : ''}
+              </div>
+
+              <p class="text-xs text-emerald-600 font-medium mb-4">● In Stock</p>
+
+              <button onclick="addToCart('${prod.id}', '${prod.name.replace(/'/g, "\\'")}', ${prod.price})"
+                      class="w-full bg-brand-blue hover:bg-brand-dark text-white text-sm font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bag-shopping"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ========== CART & WISHLIST ==========
+    function addToCart(id, name, price) {
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ id, name, price, quantity: 1 });
+      }
+      localStorage.setItem('qb_cart', JSON.stringify(cart));
+      updateCounts();
+      alert(`✓ "${name}" added to cart`);
+    }
+
+    function toggleWishlist(id) {
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(i => i !== id);
+      } else {
+        wishlist.push(id);
+      }
+      localStorage.setItem('qb_wishlist', JSON.stringify(wishlist));
+      updateCounts();
+    }
+
+    // ========== EVENT LISTENERS ==========
+    document.getElementById('search-btn')?.addEventListener('click', applyFilters);
+    document.getElementById('mobile-search-btn')?.addEventListener('click', applyFilters);
+    document.getElementById('search-input')?.addEventListener('keypress', e => {
+      if (e.key === 'Enter') applyFilters();
+    });
+    document.getElementById('mobile-search-input')?.addEventListener('keypress', e => {
+      if (e.key === 'Enter') applyFilters();
+    });
+
+    document.getElementById('sort-select')?.addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      applyFilters();
+    });
+
+    document.getElementById('apply-price')?.addEventListener('click', applyFilters);
+
+    document.getElementById('clear-filters')?.addEventListener('click', () => {
+      document.getElementById('search-input').value = '';
+      document.getElementById('mobile-search-input').value = '';
+      document.getElementById('min-price').value = '';
+      document.getElementById('max-price').value = '';
+      currentCategory = '';
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('filter-active'));
+      document.querySelector('.category-btn[data-category=""]').classList.add('filter-active');
+      applyFilters();
+    });
+
+    document.getElementById('reset-search')?.addEventListener('click', () => {
+      document.getElementById('clear-filters').click();
+    });
+
+    // Mobile filter toggle
+    document.getElementById('filter-toggle')?.addEventListener('click', () => {
+      const panel = document.getElementById('filters-panel');
+      panel.classList.toggle('hidden');
+    });
+
+    // ========== INIT ==========
+    updateCounts();
+    loadCategories();
+    loadProducts();
+  </script>
+</body>
+</html>
