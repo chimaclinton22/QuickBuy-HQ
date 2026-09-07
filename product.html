@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product – QuickBuy HQ</title>
+  <meta name="description" content="Shop quality products at QuickBuy HQ with fast delivery across Nigeria." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .thumbnail.active { border-color: #087EBC; ring: 2px; ring-color: #087EBC; }
+    .quantity-btn { transition: all 0.15s ease; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Announcement Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2.5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-y-1">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-orange-400"></i>
+        <span>Free Shipping on Orders Over ₦50,000</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>Trusted by 100,000+ Happy Customers</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-headset text-orange-400"></i>
+        <span>24/7 Customer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex-shrink-0">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+
+        <div class="hidden md:flex flex-1 max-w-xl mx-8">
+          <div class="relative w-full flex">
+            <input type="text" placeholder="Search products..." 
+                   class="w-full bg-slate-100 border border-transparent focus:border-brand-blue focus:bg-white rounded-l-xl py-2.5 pl-4 pr-4 text-sm outline-none">
+            <button class="bg-brand-blue hover:bg-brand-dark text-white px-5 rounded-r-xl">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5 text-slate-700">
+          <a href="#" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-regular fa-heart text-xl"></i>
+            <span class="text-[11px] mt-0.5">Wishlist</span>
+            <span id="wishlist-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="cart.html" class="flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[11px] mt-0.5 hidden sm:block">Cart</span>
+            <span id="cart-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="account.html" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition">
+            <i class="fa-regular fa-user text-xl"></i>
+            <span class="text-[11px] mt-0.5">Account</span>
+          </a>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 py-3 border-t border-slate-100 text-sm font-medium text-slate-600">
+        <a href="shop.html" class="hover:text-brand-blue transition">Shop</a>
+        <a href="index.html#categories" class="hover:text-brand-blue transition">Categories</a>
+        <a href="index.html#featured" class="hover:text-brand-blue transition">Deals</a>
+        <a href="track-order.html" class="hover:text-brand-blue transition">Track Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <nav class="text-sm text-slate-500">
+        <a href="index.html" class="hover:text-brand-blue">Home</a>
+        <span class="mx-2">/</span>
+        <a href="shop.html" class="hover:text-brand-blue">Shop</a>
+        <span class="mx-2">/</span>
+        <span id="breadcrumb-name" class="text-slate-800 font-medium">Product</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Product Section -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    
+    <!-- Loading State -->
+    <div id="loading-state" class="py-32 text-center text-slate-400">
+      <i class="fa-solid fa-spinner fa-spin text-4xl mb-4"></i>
+      <p class="text-lg">Loading product...</p>
+    </div>
+
+    <!-- Product Content (hidden until loaded) -->
+    <div id="product-content" class="hidden">
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
+
+        <!-- Left: Images -->
+        <div>
+          <!-- Main Image -->
+          <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-4">
+            <div class="aspect-square flex items-center justify-center p-8 bg-slate-50">
+              <img id="main-image" src="" alt="" class="max-h-full max-w-full object-contain">
+            </div>
+          </div>
+
+          <!-- Thumbnails -->
+          <div id="thumbnails" class="flex gap-3 overflow-x-auto pb-2">
+            <!-- Dynamic thumbnails -->
+          </div>
+        </div>
+
+        <!-- Right: Product Info -->
+        <div>
+          <div class="mb-2">
+            <span id="product-brand" class="text-sm font-medium text-brand-blue"></span>
+          </div>
+
+          <h1 id="product-name" class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-tight mb-4"></h1>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-3 mb-6">
+            <div id="product-rating" class="flex text-amber-400 text-lg"></div>
+            <span id="review-count" class="text-sm text-slate-500"></span>
+            <span class="text-slate-300">|</span>
+            <span id="stock-status" class="text-sm font-medium"></span>
+          </div>
+
+          <!-- Price -->
+          <div class="flex items-baseline gap-3 mb-2">
+            <span id="product-price" class="text-3xl sm:text-4xl font-black text-slate-900"></span>
+            <span id="compare-price" class="text-xl text-slate-400 line-through hidden"></span>
+            <span id="discount-badge" class="bg-red-500 text-white text-sm font-bold px-2.5 py-1 rounded-lg hidden"></span>
+          </div>
+
+          <p class="text-sm text-slate-500 mb-8">SKU: <span id="product-sku" class="font-medium text-slate-700"></span></p>
+
+          <!-- Description -->
+          <div class="mb-8">
+            <h3 class="font-bold text-sm uppercase tracking-wider text-slate-900 mb-3">Description</h3>
+            <p id="product-description" class="text-slate-600 leading-relaxed"></p>
+          </div>
+
+          <!-- Quantity -->
+          <div class="mb-8">
+            <h3 class="font-bold text-sm uppercase tracking-wider text-slate-900 mb-3">Quantity</h3>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden">
+                <button id="qty-minus" class="quantity-btn w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 text-lg font-medium">−</button>
+                <input id="quantity" type="number" value="1" min="1" 
+                       class="w-16 h-12 text-center border-x border-slate-200 text-lg font-semibold outline-none">
+                <button id="qty-plus" class="quantity-btn w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 text-lg font-medium">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 mb-10">
+            <button id="add-to-cart-btn" 
+                    class="flex-1 bg-brand-blue hover:bg-brand-dark text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-3 text-base shadow-lg shadow-brand-blue/20">
+              <i class="fa-solid fa-bag-shopping"></i>
+              Add to Cart
+            </button>
+            <button id="buy-now-btn" 
+                    class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-3 text-base">
+              Buy Now
+            </button>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-100 pt-8">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue">
+                <i class="fa-solid fa-truck-fast"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-sm">Fast Delivery</p>
+                <p class="text-xs text-slate-500">Across Nigeria</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-sm">Secure Checkout</p>
+                <p class="text-xs text-slate-500">100% Safe</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue">
+                <i class="fa-solid fa-rotate-left"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-sm">Easy Returns</p>
+                <p class="text-xs text-slate-500">Hassle Free</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      <section class="mt-20">
+        <div class="flex items-end justify-between mb-8">
+          <div>
+            <p class="text-orange-500 text-xs font-bold uppercase tracking-wider mb-1">You May Also Like</p>
+            <h2 class="text-2xl font-black text-slate-900">Related Products</h2>
+          </div>
+          <a href="shop.html" class="text-brand-blue font-semibold text-sm hover:underline">View All →</a>
+        </div>
+
+        <div id="related-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Dynamic related products -->
+        </div>
+      </section>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="hidden py-32 text-center">
+      <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
+        <i class="fa-solid fa-exclamation-triangle text-3xl text-red-500"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Product Not Found</h3>
+      <p class="text-slate-500 mb-6">This product may have been removed or the link is incorrect.</p>
+      <a href="shop.html" class="inline-block bg-brand-blue hover:bg-brand-dark text-white font-semibold px-6 py-3 rounded-xl transition">
+        Back to Shop
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div>
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-10 mb-4 object-contain">
+          <p class="text-sm leading-relaxed">Your trusted online store for quality products and fast delivery across Nigeria.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+            <li><a href="shop.html" class="hover:text-white transition">Shop</a></li>
+            <li><a href="track-order.html" class="hover:text-white transition">Track Order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Customer Service</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition">Shipping Info</a></li>
+            <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Contact</h4>
+          <ul class="space-y-3 text-sm">
+            <li>+234 801 234 5678</li>
+            <li>support@quickbuyhq.com</li>
+            <li>Lagos, Nigeria</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
+      © 2026 QuickBuy HQ. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========== STATE ==========
+    let currentProduct = null;
+    let quantity = 1;
+    let cart = JSON.parse(localStorage.getItem('qb_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('qb_wishlist') || '[]');
+
+    function updateCounts() {
+      document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      document.getElementById('wishlist-count').textContent = wishlist.length;
+    }
+
+    // ========== GET PRODUCT ID FROM URL ==========
+    function getProductId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    // ========== LOAD PRODUCT ==========
+    async function loadProduct() {
+      const productId = getProductId();
+      
+      if (!productId) {
+        showError();
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('products')
+          .select(`
+            id, name, slug, sku, brand, description, price, compare_at_price, 
+            discount_percentage, rating, review_count, status,
+            product_images (id, image_url, is_primary, sort_order)
+          `)
+          .eq('id', productId)
+          .eq('status', 'active')
+          .single();
+
+        if (error || !data) {
+          showError();
+          return;
+        }
+
+        currentProduct = data;
+        renderProduct(data);
+        loadRelatedProducts(data.id);
+        
+      } catch (err) {
+        console.error(err);
+        showError();
+      }
+    }
+
+    // ========== RENDER PRODUCT ==========
+    function renderProduct(prod) {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('product-content').classList.remove('hidden');
+
+      // Title & meta
+      document.title = `${prod.name} – QuickBuy HQ`;
+      document.getElementById('breadcrumb-name').textContent = prod.name;
+      document.getElementById('product-name').textContent = prod.name;
+      document.getElementById('product-brand').textContent = prod.brand || 'QuickBuy HQ';
+      document.getElementById('product-sku').textContent = prod.sku || 'N/A';
+      document.getElementById('product-description').textContent = prod.description || 'No description available.';
+
+      // Rating
+      const rating = prod.rating || 4.5;
+      document.getElementById('product-rating').innerHTML = 
+        '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+      document.getElementById('review-count').textContent = `${prod.review_count || 0} reviews`;
+
+      // Stock
+      const stockEl = document.getElementById('stock-status');
+      stockEl.textContent = '● In Stock';
+      stockEl.className = 'text-sm font-medium text-emerald-600';
+
+      // Price
+      document.getElementById('product-price').textContent = `₦${Number(prod.price).toLocaleString()}`;
+      
+      if (prod.compare_at_price && prod.compare_at_price > prod.price) {
+        document.getElementById('compare-price').textContent = `₦${Number(prod.compare_at_price).toLocaleString()}`;
+        document.getElementById('compare-price').classList.remove('hidden');
+        
+        const discount = Math.round(((prod.compare_at_price - prod.price) / prod.compare_at_price) * 100);
+        document.getElementById('discount-badge').textContent = `-${discount}%`;
+        document.getElementById('discount-badge').classList.remove('hidden');
+      }
+
+      // Images
+      const images = (prod.product_images || []).sort((a, b) => a.sort_order - b.sort_order);
+      const mainImg = document.getElementById('main-image');
+      const thumbsContainer = document.getElementById('thumbnails');
+
+      if (images.length > 0) {
+        const primary = images.find(img => img.is_primary) || images[0];
+        mainImg.src = primary.image_url;
+        mainImg.alt = prod.name;
+
+        thumbsContainer.innerHTML = images.map((img, index) => `
+          <button class="thumbnail ${index === 0 ? 'active border-brand-blue' : 'border-slate-200'} 
+                         w-20 h-20 rounded-xl border-2 overflow-hidden bg-white flex-shrink-0 transition"
+                  onclick="changeImage('${img.image_url}', this)">
+            <img src="${img.image_url}" alt="" class="w-full h-full object-contain p-1">
+          </button>
+        `).join('');
+      } else {
+        mainImg.src = 'https://placehold.co/600x600?text=No+Image';
+      }
+    }
+
+    function changeImage(url, btn) {
+      document.getElementById('main-image').src = url;
+      document.querySelectorAll('.thumbnail').forEach(t => {
+        t.classList.remove('active', 'border-brand-blue');
+        t.classList.add('border-slate-200');
+      });
+      btn.classList.add('active', 'border-brand-blue');
+      btn.classList.remove('border-slate-200');
+    }
+
+    // ========== QUANTITY ==========
+    document.getElementById('qty-minus').addEventListener('click', () => {
+      if (quantity > 1) {
+        quantity--;
+        document.getElementById('quantity').value = quantity;
+      }
+    });
+
+    document.getElementById('qty-plus').addEventListener('click', () => {
+      quantity++;
+      document.getElementById('quantity').value = quantity;
+    });
+
+    document.getElementById('quantity').addEventListener('change', (e) => {
+      quantity = Math.max(1, parseInt(e.target.value) || 1);
+      e.target.value = quantity;
+    });
+
+    // ========== ADD TO CART ==========
+    document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+      if (!currentProduct) return;
+
+      const existing = cart.find(item => item.id === currentProduct.id);
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        cart.push({
+          id: currentProduct.id,
+          name: currentProduct.name,
+          price: currentProduct.price,
+          quantity: quantity,
+          image: currentProduct.product_images?.[0]?.image_url || null
+        });
+      }
+
+      localStorage.setItem('qb_cart', JSON.stringify(cart));
+      updateCounts();
+      alert(`✓ ${quantity} × "${currentProduct.name}" added to cart`);
+    });
+
+    document.getElementById('buy-now-btn').addEventListener('click', () => {
+      document.getElementById('add-to-cart-btn').click();
+      window.location.href = 'cart.html';
+    });
+
+    // ========== RELATED PRODUCTS ==========
+    async function loadRelatedProducts(excludeId) {
+      try {
+        const { data } = await supabaseClient
+          .from('products')
+          .select(`
+            id, name, price, compare_at_price, rating, review_count,
+            product_images (image_url, is_primary)
+          `)
+          .eq('status', 'active')
+          .neq('id', excludeId)
+          .limit(4);
+
+        const container = document.getElementById('related-products');
+        
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8">No related products</p>';
+          return;
+        }
+
+        container.innerHTML = data.map(prod => {
+          const img = prod.product_images?.find(i => i.is_primary)?.image_url 
+                   || prod.product_images?.[0]?.image_url 
+                   || 'https://placehold.co/300x300?text=No+Image';
+
+          return `
+            <a href="product.html?id=${prod.id}" class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-lg transition group">
+              <div class="aspect-square bg-slate-50 p-4">
+                <img src="${img}" alt="${prod.name}" class="w-full h-full object-contain group-hover:scale-105 transition">
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold text-sm text-slate-800 line-clamp-2 mb-2">${prod.name}</h3>
+                <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
+                  ${'★'.repeat(Math.floor(prod.rating || 4))}
+                  <span class="text-slate-400 ml-1">(${prod.review_count || 0})</span>
+                </div>
+                <p class="font-bold text-slate-900">₦${Number(prod.price).toLocaleString()}</p>
+              </div>
+            </a>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function showError() {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-state').classList.remove('hidden');
+    }
+
+    // ========== INIT ==========
+    updateCounts();
+    loadProduct();
+  </script>
+</body>
+</html>
