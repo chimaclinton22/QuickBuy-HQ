@@ -1,517 +1,759 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickBuy HQ - Everything You Need. Delivered Fast.</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBuy HQ | Everything You Need. Delivered.</title>
+  <meta name="description" content="Shop quality products from QuickBuy HQ. Fast delivery across Nigeria. Electronics, Phones, Fashion, Home & more." />
 
-    <!-- Top Announcement Bar -->
-    <div class="bg-slate-900 text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-truck-fast text-amber-500"></i>
-                <span>Free Shipping on Orders Over ₦50,000</span>
-            </div>
-            <div class="hidden sm:flex items-center space-x-2">
-                <i class="fa-solid fa-shield-halved text-emerald-400"></i>
-                <span>Trusted by 100,000+ Happy Customers</span>
-            </div>
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-headset text-amber-500"></i>
-                <span>24/7 Customer Support</span>
-            </div>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              'blue-dark': '#075985',
+              orange: '#F97316',
+              'orange-dark': '#EA580C',
+              navy: '#0B1F33',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- ==================== ANNOUNCEMENT BAR ==================== -->
+  <div class="bg-brand-navy text-white text-center text-sm py-2.5 px-4">
+    <span class="font-medium">Free Shipping on Orders Over ₦50,000</span>
+    <span class="mx-3 opacity-40">•</span>
+    <span>Trusted by 100,000+ Happy Customers</span>
+    <span class="mx-3 opacity-40">•</span>
+    <span>24/7 Customer Support</span>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 text-slate-600 hover:text-brand-blue">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Logo -->
+        <a href="index.html" class="flex-shrink-0">
+          <img 
+            src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+            alt="QuickBuy HQ" 
+            class="h-10 lg:h-12 w-auto"
+          />
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:flex items-center gap-8 ml-10">
+          <a href="shop.html" class="text-sm font-medium text-slate-700 hover:text-brand-blue transition">Shop</a>
+          <a href="shop.html" class="text-sm font-medium text-slate-700 hover:text-brand-blue transition">Categories</a>
+          <a href="shop.html?deals=true" class="text-sm font-medium text-slate-700 hover:text-brand-blue transition">Deals</a>
+          <a href="track-order.html" class="text-sm font-medium text-slate-700 hover:text-brand-blue transition">Track Order</a>
+        </nav>
+
+        <!-- Search (Desktop) -->
+        <div class="hidden lg:flex flex-1 max-w-md mx-8">
+          <div class="relative w-full">
+            <input 
+              type="text" 
+              id="search-input"
+              placeholder="Search for products, brands and more..." 
+              class="w-full pl-4 pr-12 py-2.5 rounded-full border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            />
+            <button class="absolute right-1.5 top-1/2 -translate-y-1/2 bg-brand-blue text-white p-2 rounded-full hover:bg-brand-blue-dark transition">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </button>
+          </div>
         </div>
+
+        <!-- Right Icons -->
+        <div class="flex items-center gap-3 sm:gap-5">
+          <a href="#" class="hidden sm:flex items-center gap-1.5 text-slate-600 hover:text-brand-blue transition relative">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+            <span class="text-xs font-medium hidden xl:inline">Wishlist</span>
+            <span id="wishlist-count" class="absolute -top-2 -right-2 bg-brand-orange text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+          </a>
+
+          <a href="cart.html" class="flex items-center gap-1.5 text-slate-600 hover:text-brand-blue transition relative">
+            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+            <span class="text-xs font-medium hidden xl:inline">Cart</span>
+            <span id="cart-count" class="absolute -top-2 -right-2 bg-brand-orange text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+
+          <a href="account.html" class="hidden sm:flex items-center gap-1.5 text-slate-600 hover:text-brand-blue transition">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span class="text-xs font-medium hidden xl:inline">Account</span>
+          </a>
+        </div>
+      </div>
     </div>
 
-    <!-- Main Navigation Header -->
-    <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                
-                <!-- Brand Logo -->
-                <a href="index.html" class="flex items-center">
-                    <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ Logo" class="h-12 w-auto object-contain">
+    <!-- Mobile Search -->
+    <div class="lg:hidden px-4 pb-3">
+      <div class="relative">
+        <input 
+          type="text" 
+          placeholder="Search products..." 
+          class="w-full pl-4 pr-10 py-2.5 rounded-full border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
+        />
+        <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu (hidden by default) -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/50 hidden lg:hidden">
+    <div class="bg-white w-72 h-full p-6 shadow-xl">
+      <div class="flex justify-between items-center mb-8">
+        <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-9" />
+        <button id="close-menu-btn" class="p-2 text-slate-500">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-1">
+        <a href="index.html" class="py-3 px-3 rounded-lg font-medium text-brand-blue bg-blue-50">Home</a>
+        <a href="shop.html" class="py-3 px-3 rounded-lg font-medium text-slate-700 hover:bg-slate-50">Shop</a>
+        <a href="shop.html" class="py-3 px-3 rounded-lg font-medium text-slate-700 hover:bg-slate-50">Categories</a>
+        <a href="shop.html?deals=true" class="py-3 px-3 rounded-lg font-medium text-slate-700 hover:bg-slate-50">Deals</a>
+        <a href="track-order.html" class="py-3 px-3 rounded-lg font-medium text-slate-700 hover:bg-slate-50">Track Order</a>
+        <a href="account.html" class="py-3 px-3 rounded-lg font-medium text-slate-700 hover:bg-slate-50">My Account</a>
+        <a href="cart.html" class="py-3 px-3 rounded-lg font-medium text-slate-700 hover:bg-slate-50">Cart</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        
+        <!-- Left Content -->
+        <div>
+          <div class="inline-flex items-center gap-2 bg-orange-50 text-brand-orange text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+            <span class="w-2 h-2 bg-brand-orange rounded-full animate-pulse"></span>
+            BEST DEALS ONLINE
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
+            Everything You Need.<br />
+            <span class="text-brand-orange">Delivered Fast.</span>
+          </h1>
+
+          <p class="mt-5 text-lg text-slate-600 max-w-lg">
+            Quality products. Simple shopping.<br />
+            Fast delivery. Trusted service.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a href="shop.html" class="inline-flex items-center gap-2 bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold px-7 py-3.5 rounded-xl transition shadow-lg shadow-orange-200">
+              Shop Now
+              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+            <a href="shop.html" class="inline-flex items-center gap-2 bg-white border-2 border-slate-200 hover:border-brand-blue text-slate-800 font-semibold px-7 py-3.5 rounded-xl transition">
+              Explore Categories
+            </a>
+          </div>
+
+          <!-- Trust badges -->
+          <div class="mt-10 flex flex-wrap gap-6 text-sm text-slate-600">
+            <div class="flex items-center gap-2">
+              <i data-lucide="truck" class="w-5 h-5 text-brand-blue"></i>
+              <span>Fast Delivery Across Nigeria</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-brand-blue"></i>
+              <span>100% Secure Checkout</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="rotate-ccw" class="w-5 h-5 text-brand-blue"></i>
+              <span>Easy Returns</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Image Composition -->
+        <div class="relative">
+          <div class="relative z-10 bg-white rounded-3xl shadow-2xl shadow-slate-200/60 p-6 lg:p-8">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-4">
+                <div class="bg-slate-100 rounded-2xl aspect-square flex items-center justify-center overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80" alt="Phone" class="w-full h-full object-cover" />
+                </div>
+                <div class="bg-slate-100 rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" alt="Headphones" class="w-full h-full object-cover" />
+                </div>
+              </div>
+              <div class="space-y-4 pt-8">
+                <div class="bg-slate-100 rounded-2xl aspect-[4/3] flex items-center justify-center overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&q=80" alt="Watch" class="w-full h-full object-cover" />
+                </div>
+                <div class="bg-slate-100 rounded-2xl aspect-square flex items-center justify-center overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&q=80" alt="Earbuds" class="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating badge -->
+            <div class="absolute -top-4 -right-4 bg-brand-orange text-white font-bold text-sm px-4 py-2 rounded-full shadow-lg">
+              UP TO 50% OFF
+            </div>
+          </div>
+
+          <!-- Decorative blobs -->
+          <div class="absolute -z-10 top-10 -right-10 w-72 h-72 bg-brand-blue/10 rounded-full blur-3xl"></div>
+          <div class="absolute -z-10 -bottom-10 -left-10 w-64 h-64 bg-brand-orange/10 rounded-full blur-3xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CATEGORIES ==================== -->
+  <section class="py-16 lg:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-sm font-semibold text-brand-orange uppercase tracking-wider mb-2">Shop by Category</p>
+          <h2 class="text-3xl font-bold text-slate-900">Popular Categories</h2>
+        </div>
+        <a href="shop.html" class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand-blue hover:underline">
+          View All Categories
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div id="categories-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
+        <!-- Categories will be loaded from Supabase -->
+        <div class="col-span-full text-center py-12 text-slate-400">
+          <div class="inline-block w-8 h-8 border-2 border-slate-300 border-t-brand-blue rounded-full animate-spin mb-3"></div>
+          <p>Loading categories...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURED PRODUCTS ==================== -->
+  <section class="py-16 lg:py-20 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-sm font-semibold text-brand-orange uppercase tracking-wider mb-2">Trending Now</p>
+          <h2 class="text-3xl font-bold text-slate-900">Featured Products</h2>
+        </div>
+        <a href="shop.html" class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand-blue hover:underline">
+          View All Products
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div id="products-grid" class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+        <!-- Products will be loaded from Supabase -->
+        <div class="col-span-full text-center py-16 text-slate-400">
+          <div class="inline-block w-8 h-8 border-2 border-slate-300 border-t-brand-blue rounded-full animate-spin mb-3"></div>
+          <p>Loading products...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PROMO BANNER ==================== -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-navy via-brand-blue to-brand-blue-dark text-white">
+        <div class="absolute inset-0 opacity-20">
+          <div class="absolute top-0 right-0 w-96 h-96 bg-brand-orange rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        </div>
+        
+        <div class="relative px-8 py-12 lg:px-16 lg:py-16 flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div class="max-w-xl">
+            <p class="text-brand-orange font-semibold text-sm uppercase tracking-wider mb-3">Special Offer</p>
+            <h2 class="text-3xl lg:text-4xl font-bold leading-tight">
+              Upgrade Your Tech.<br />Save More!
+            </h2>
+            <p class="mt-4 text-blue-100 text-lg">
+              Get up to 50% off on selected electronics and accessories.
+            </p>
+            <a href="shop.html?deals=true" class="inline-flex items-center gap-2 mt-7 bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold px-6 py-3 rounded-xl transition">
+              Shop Deals
+              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+          </div>
+
+          <div class="hidden lg:block">
+            <img 
+              src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&q=80" 
+              alt="Tech products" 
+              class="w-80 h-56 object-cover rounded-2xl shadow-2xl"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WHY QUICKBUY ==================== -->
+  <section class="py-16 lg:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-slate-900">Why Shop With QuickBuy HQ?</h2>
+        <p class="mt-3 text-slate-600">We’re built for speed, quality and trust.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center p-6 rounded-2xl hover:bg-slate-50 transition">
+          <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="truck" class="w-7 h-7"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Fast Delivery</h3>
+          <p class="text-slate-600 text-sm">Get your order moving quickly across Nigeria.</p>
+        </div>
+
+        <div class="text-center p-6 rounded-2xl hover:bg-slate-50 transition">
+          <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="shield-check" class="w-7 h-7"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Secure Checkout</h3>
+          <p class="text-slate-600 text-sm">Protected shopping experience every time.</p>
+        </div>
+
+        <div class="text-center p-6 rounded-2xl hover:bg-slate-50 transition">
+          <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="badge-check" class="w-7 h-7"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Quality Products</h3>
+          <p class="text-slate-600 text-sm">Carefully selected products you can trust.</p>
+        </div>
+
+        <div class="text-center p-6 rounded-2xl hover:bg-slate-50 transition">
+          <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="rotate-ccw" class="w-7 h-7"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Easy Returns</h3>
+          <p class="text-slate-600 text-sm">Simple customer support when you need it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== NEWSLETTER ==================== -->
+  <section class="py-16 bg-slate-50">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-slate-900 mb-3">Get the Best Deals First</h2>
+      <p class="text-slate-600 mb-8">New products, exclusive offers and special deals delivered to your inbox.</p>
+      
+      <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input 
+          type="email" 
+          required
+          placeholder="Enter your email address" 
+          class="flex-1 px-5 py-3.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-blue text-sm"
+        />
+        <button type="submit" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold px-7 py-3.5 rounded-xl transition">
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-brand-navy text-slate-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
+        
+        <!-- Brand -->
+        <div class="col-span-2 lg:col-span-1">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-10 mb-5 brightness-0 invert" />
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Your trusted online store. Quality products, great prices, fast delivery.
+          </p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-orange transition">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-orange transition">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-orange transition">
+              <i data-lucide="twitter" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+            <li><a href="shop.html" class="hover:text-white transition">Shop</a></li>
+            <li><a href="shop.html" class="hover:text-white transition">Categories</a></li>
+            <li><a href="shop.html?deals=true" class="hover:text-white transition">Deals</a></li>
+            <li><a href="track-order.html" class="hover:text-white transition">Track Order</a></li>
+          </ul>
+        </div>
+
+        <!-- Customer Service -->
+        <div>
+          <h4 class="text-white font-semibold mb-4">Customer Service</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition">Shipping Info</a></li>
+            <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
+            <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
+            <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="text-white font-semibold mb-4">Contact Us</h4>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-2">
+              <i data-lucide="phone" class="w-4 h-4 mt-0.5 text-brand-orange"></i>
+              <span>+234 801 234 5678</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="mail" class="w-4 h-4 mt-0.5 text-brand-orange"></i>
+              <span>support@quickbuyhq.com</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-brand-orange"></i>
+              <span>Lagos, Nigeria</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Newsletter mini -->
+        <div class="col-span-2 md:col-span-4 lg:col-span-1">
+          <h4 class="text-white font-semibold mb-4">Stay Updated</h4>
+          <p class="text-sm text-slate-400 mb-4">Subscribe for exclusive deals.</p>
+          <div class="flex gap-2">
+            <input type="email" placeholder="Your email" class="flex-1 px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-orange" />
+            <button class="bg-brand-orange hover:bg-brand-orange-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+              Go
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+        <p>© 2026 QuickBuy HQ. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <span>Shop Smart</span>
+          <span>•</span>
+          <span>Shop Quick</span>
+          <span>•</span>
+          <span>Shop QuickBuy HQ</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Supabase Client
+    const SUPABASE_URL = 'https://zflruqzsbmiwvslcured.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuBtn?.addEventListener('click', () => {
+      mobileMenu.classList.remove('hidden');
+    });
+
+    closeMenuBtn?.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+    });
+
+    mobileMenu?.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) mobileMenu.classList.add('hidden');
+    });
+
+    // Format price in Naira
+    function formatPrice(amount) {
+      return '₦' + Number(amount).toLocaleString('en-NG');
+    }
+
+    // Load Categories from Supabase
+    async function loadCategories() {
+      const grid = document.getElementById('categories-grid');
+      
+      try {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          // Fallback categories if none exist yet
+          grid.innerHTML = `
+            <a href="shop.html?category=electronics" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+              <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <i data-lucide="laptop" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-semibold text-slate-900">Electronics</h3>
+              <p class="text-xs text-slate-500 mt-1">Devices & Gadgets</p>
+            </a>
+            <a href="shop.html?category=phones" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+              <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <i data-lucide="smartphone" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-semibold text-slate-900">Phones</h3>
+              <p class="text-xs text-slate-500 mt-1">Latest Smartphones</p>
+            </a>
+            <a href="shop.html?category=accessories" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+              <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <i data-lucide="headphones" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-semibold text-slate-900">Accessories</h3>
+              <p class="text-xs text-slate-500 mt-1">Must Have Extras</p>
+            </a>
+            <a href="shop.html?category=fashion" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+              <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <i data-lucide="shirt" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-semibold text-slate-900">Fashion</h3>
+              <p class="text-xs text-slate-500 mt-1">Style for Everyone</p>
+            </a>
+            <a href="shop.html?category=home" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+              <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <i data-lucide="home" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-semibold text-slate-900">Home & Living</h3>
+              <p class="text-xs text-slate-500 mt-1">Better Home</p>
+            </a>
+            <a href="shop.html?category=beauty" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+              <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <i data-lucide="sparkles" class="w-7 h-7"></i>
+              </div>
+              <h3 class="font-semibold text-slate-900">Beauty</h3>
+              <p class="text-xs text-slate-500 mt-1">Look Your Best</p>
+            </a>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        grid.innerHTML = data.map(cat => `
+          <a href="shop.html?category=${cat.slug}" class="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-brand-blue/30 rounded-2xl p-5 text-center transition-all hover:shadow-lg hover:-translate-y-1">
+            <div class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition overflow-hidden">
+              ${cat.image_url 
+                ? `<img src="${cat.image_url}" alt="${cat.name}" class="w-full h-full object-cover" />`
+                : `<i data-lucide="package" class="w-7 h-7"></i>`
+              }
+            </div>
+            <h3 class="font-semibold text-slate-900">${cat.name}</h3>
+            <p class="text-xs text-slate-500 mt-1">${cat.description || 'Shop now'}</p>
+          </a>
+        `).join('');
+
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading categories:', err);
+        grid.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8">Unable to load categories. Please refresh.</p>`;
+      }
+    }
+
+    // Load Featured Products from Supabase
+    async function loadProducts() {
+      const grid = document.getElementById('products-grid');
+
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            id, name, slug, price, compare_at_price, discount_percentage, 
+            rating, review_count, status,
+            product_images (image_url, is_primary),
+            inventory (stock_quantity)
+          `)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full text-center py-16">
+              <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="package-open" class="w-8 h-8 text-slate-400"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-700 mb-2">No products yet</h3>
+              <p class="text-slate-500 text-sm">Products will appear here once added from the admin panel.</p>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        grid.innerHTML = data.map(product => {
+          const primaryImage = product.product_images?.find(img => img.is_primary)?.image_url 
+            || product.product_images?.[0]?.image_url 
+            || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
+          
+          const stock = product.inventory?.[0]?.stock_quantity ?? 0;
+          const inStock = stock > 0;
+          const discount = product.discount_percentage > 0 ? product.discount_percentage : null;
+
+          return `
+            <div class="group bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <a href="product.html?id=${product.id}" class="block relative aspect-square bg-slate-50 overflow-hidden">
+                <img 
+                  src="${primaryImage}" 
+                  alt="${product.name}" 
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  loading="lazy"
+                />
+                ${discount ? `
+                  <span class="absolute top-3 left-3 bg-brand-orange text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                    -${discount}%
+                  </span>
+                ` : ''}
+                <button class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-slate-500 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
+                  <i data-lucide="heart" class="w-4 h-4"></i>
+                </button>
+              </a>
+
+              <div class="p-4">
+                <a href="product.html?id=${product.id}" class="block">
+                  <h3 class="font-semibold text-slate-900 text-sm line-clamp-2 group-hover:text-brand-blue transition">
+                    ${product.name}
+                  </h3>
                 </a>
 
-                <!-- Desktop Search Bar -->
-                <div class="hidden md:flex flex-1 max-w-xl mx-8">
-                    <div class="relative flex items-center w-full">
-                        <input id="desktop-search-input" type="text" placeholder="Search for products, brands and more..." 
-                               class="w-full bg-slate-100 text-slate-800 pl-4 pr-12 py-2.5 rounded-l-lg border border-transparent focus:border-blue-500 focus:bg-white focus:outline-none transition text-sm">
-                        <button id="desktop-search-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-r-lg flex items-center justify-center transition">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
+                <div class="flex items-center gap-1 mt-2">
+                  <div class="flex text-amber-400">
+                    ${Array(5).fill(0).map((_, i) => 
+                      `<i data-lucide="star" class="w-3.5 h-3.5 ${i < Math.round(product.rating || 0) ? 'fill-current' : ''}"></i>`
+                    ).join('')}
+                  </div>
+                  <span class="text-xs text-slate-500 ml-1">(${product.review_count || 0})</span>
                 </div>
 
-                <!-- Right Actions Header -->
-                <div class="flex items-center space-x-4 sm:space-x-6 text-slate-700">
-                    <a href="#" class="flex flex-col items-center hover:text-blue-600 transition relative">
-                        <i class="fa-regular fa-heart text-xl"></i>
-                        <span class="text-xs mt-0.5 hidden sm:inline">Wishlist</span>
-                        <span id="wishlist-count" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
-                    </a>
-                    <a href="#" class="flex flex-col items-center hover:text-blue-600 transition relative">
-                        <i class="fa-solid fa-bag-shopping text-xl"></i>
-                        <span class="text-xs mt-0.5 hidden sm:inline">Cart</span>
-                        <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
-                    </a>
-                    <div class="flex flex-col items-center hover:text-blue-600 cursor-pointer transition">
-                        <i class="fa-regular fa-user text-xl"></i>
-                        <span class="text-xs mt-0.5 items-center hidden sm:flex">
-                            Account <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
-                        </span>
-                    </div>
-                    <!-- Mobile Menu Button -->
-                    <button id="mobile-menu-btn" class="md:hidden text-slate-700 text-2xl focus:outline-none ml-2">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+                <div class="mt-3 flex items-baseline gap-2">
+                  <span class="font-bold text-slate-900">${formatPrice(product.price)}</span>
+                  ${product.compare_at_price ? `
+                    <span class="text-sm text-slate-400 line-through">${formatPrice(product.compare_at_price)}</span>
+                  ` : ''}
                 </div>
-            </div>
 
-            <!-- Mobile Search Bar -->
-            <div class="md:hidden pb-4">
-                <div class="relative flex items-center w-full">
-                    <input id="mobile-search-input" type="text" placeholder="Search products..." 
-                           class="w-full bg-slate-100 text-slate-800 pl-4 pr-10 py-2 rounded-l-lg border border-transparent focus:border-blue-500 focus:bg-white focus:outline-none text-sm">
-                    <button id="mobile-search-btn" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                <div class="mt-2 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full ${inStock ? 'bg-green-500' : 'bg-red-500'}"></span>
+                  <span class="text-xs ${inStock ? 'text-green-600' : 'text-red-600'}">
+                    ${inStock ? 'In Stock' : 'Out of Stock'}
+                  </span>
                 </div>
+
+                <button 
+                  onclick="addToCart('${product.id}')"
+                  class="mt-4 w-full bg-brand-blue hover:bg-brand-blue-dark text-white text-sm font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 ${!inStock ? 'opacity-50 cursor-not-allowed' : ''}"
+                  ${!inStock ? 'disabled' : ''}
+                >
+                  <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                  Add to Cart
+                </button>
+              </div>
             </div>
+          `;
+        }).join('');
 
-            <!-- Categories Navigation Bar -->
-            <nav id="mobile-menu" class="hidden md:flex flex-col md:flex-row md:space-x-8 py-3 border-t border-slate-100 text-sm font-medium text-slate-600">
-                <a href="#" class="py-1 hover:text-blue-600 flex items-center">Shop <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></a>
-                <a href="#categories-section" class="py-1 hover:text-blue-600 flex items-center">Categories <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></a>
-                <a href="#featured-section" class="py-1 hover:text-blue-600">Deals</a>
-                <a href="#" class="py-1 hover:text-blue-600">Track Order</a>
-            </nav>
-        </div>
-    </header>
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Error loading products:', err);
+        grid.innerHTML = `<p class="col-span-full text-center text-slate-500 py-12">Unable to load products. Please refresh the page.</p>`;
+      }
+    }
 
-    <!-- Hero Banner Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10 w-full">
-        <div class="relative bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl overflow-hidden shadow-xl p-6 sm:p-8 lg:p-12 text-white flex flex-col md:flex-row items-center justify-between">
-            <div class="max-w-xl z-10 w-full">
-                <span class="inline-block bg-amber-500 text-slate-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-4 shadow">
-                    BEST DEALS ONLINE
-                </span>
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4">
-                    Everything You Need.<br>
-                    <span class="text-amber-300">Delivered Fast.</span>
-                </h1>
-                <p class="text-cyan-100 text-sm sm:text-base mb-8 max-w-md">
-                    Quality products. Simple shopping. Fast delivery. Trusted service.
-                </p>
-                <div class="flex flex-wrap gap-4 mb-8">
-                    <a href="#featured-section" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition flex items-center text-sm">
-                        Shop Now <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
-                    </a>
-                    <a href="#categories-section" class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-semibold px-6 py-3 rounded-lg border border-white/30 transition text-sm">
-                        Explore Categories
-                    </a>
-                </div>
-                <!-- Badges -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-white/20 pt-6 text-xs text-cyan-100">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-truck text-amber-300 text-base"></i>
-                        <div><strong class="block text-white">Fast Delivery</strong> Across Nigeria</div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-shield-halved text-amber-300 text-base"></i>
-                        <div><strong class="block text-white">Secure Checkout</strong> 100% Safe & Encrypted</div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-rotate-left text-amber-300 text-base"></i>
-                        <div><strong class="block text-white">Easy Returns</strong> Hassle Free</div>
-                    </div>
-                </div>
-            </div>
+    // Simple cart counter (will be improved later)
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('quickbuy_cart') || '[]');
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const badge = document.getElementById('cart-count');
+      if (badge) {
+        badge.textContent = count;
+        badge.classList.toggle('hidden', count === 0);
+      }
+    }
 
-            <!-- Hero Image Showcase -->
-            <div class="relative mt-8 md:mt-0 flex justify-center items-center w-full md:w-auto">
-                <div class="absolute -top-4 -right-4 bg-red-500 text-white font-black text-center rounded-full h-16 w-16 sm:h-20 sm:w-20 flex flex-col justify-center shadow-lg border-2 border-white z-20">
-                    <span class="text-[10px] sm:text-xs">UP TO</span>
-                    <span class="text-lg sm:text-xl leading-none">50%</span>
-                    <span class="text-[9px] sm:text-[10px]">OFF</span>
-                </div>
-                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" 
-                     alt="Tech Gadgets" class="w-full max-w-sm sm:max-w-md object-contain rounded-xl drop-shadow-2xl">
-            </div>
-        </div>
-    </section>
+    function addToCart(productId) {
+      // Temporary localStorage cart – will be replaced with real Supabase cart later
+      let cart = JSON.parse(localStorage.getItem('quickbuy_cart') || '[]');
+      const existing = cart.find(item => item.product_id === productId);
+      
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ product_id: productId, quantity: 1 });
+      }
+      
+      localStorage.setItem('quickbuy_cart', JSON.stringify(cart));
+      updateCartCount();
+      
+      // Simple feedback
+      alert('Product added to cart!');
+    }
 
-    <!-- Popular Categories -->
-    <section id="categories-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <div class="flex justify-between items-end mb-6">
-            <div>
-                <span class="text-xs font-bold text-amber-600 tracking-wider uppercase">SHOP BY CATEGORY</span>
-                <h2 class="text-2xl font-black text-slate-900">Popular Categories</h2>
-            </div>
-            <a href="#" class="text-blue-600 text-sm font-semibold hover:underline flex items-center">
-                View All Categories <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
-            </a>
-        </div>
+    // Newsletter form
+    document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Thank you for subscribing! (This will be connected to a real service later)');
+      e.target.reset();
+    });
 
-        <div id="categories-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            <!-- Dynamically Loaded via Supabase -->
-            <div class="col-span-full text-center py-8 text-slate-400">Loading categories...</div>
-        </div>
-    </section>
-
-    <!-- Featured Products -->
-    <section id="featured-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <div class="flex justify-between items-end mb-6">
-            <div>
-                <span class="text-xs font-bold text-amber-600 tracking-wider uppercase">TRENDING NOW</span>
-                <h2 class="text-2xl font-black text-slate-900">Featured Products</h2>
-            </div>
-            <a href="#" class="text-blue-600 text-sm font-semibold hover:underline flex items-center">
-                View All Products <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
-            </a>
-        </div>
-
-        <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <!-- Dynamically Loaded via Supabase -->
-            <div class="col-span-full text-center py-12 text-slate-400">Loading products from Supabase...</div>
-        </div>
-    </section>
-
-    <!-- Trust Features Grid -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <div class="bg-blue-50/50 rounded-xl p-6 border border-blue-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs text-slate-900">100% Original Products</h4>
-                    <p class="text-[11px] text-slate-500">Guaranteed Authentic</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                    <i class="fa-solid fa-credit-card"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs text-slate-900">Secure Payment</h4>
-                    <p class="text-[11px] text-slate-500">Multiple Payment Options</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                    <i class="fa-solid fa-truck-fast"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs text-slate-900">Fast & Reliable Delivery</h4>
-                    <p class="text-[11px] text-slate-500">Nationwide Coverage</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                    <i class="fa-solid fa-headset"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-xs text-slate-900">24/7 Support</h4>
-                    <p class="text-[11px] text-slate-500">We're Always Here</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Promo Banner Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <div class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-6 sm:p-8 text-white flex flex-col lg:flex-row items-center justify-between shadow-lg relative overflow-hidden">
-            <div class="max-w-lg z-10 mb-6 lg:mb-0">
-                <span class="bg-amber-500 text-slate-900 font-bold text-[10px] px-2.5 py-1 rounded uppercase tracking-wider">SPECIAL OFFER</span>
-                <h2 class="text-2xl sm:text-3xl font-black mt-3 mb-2">Upgrade Your Tech<br>Save More!</h2>
-                <p class="text-blue-100 text-xs mb-6">Get up to 50% off on selected electronics and accessories.</p>
-                <a href="#featured-section" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-2.5 rounded-lg text-xs transition inline-block">Shop Deals &rarr;</a>
-            </div>
-            <div class="relative z-10">
-                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80" alt="Tech Setup" class="max-h-52 object-contain rounded-lg">
-            </div>
-            <div class="absolute right-6 top-6 bg-red-500 text-white rounded-full h-16 w-16 flex flex-col items-center justify-center font-black border-2 border-white text-center leading-none">
-                <span class="text-[9px]">UP TO</span>
-                <span class="text-base">50%</span>
-                <span class="text-[8px]">OFF</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Footer -->
-    <footer class="bg-slate-900 text-slate-300 mt-auto text-xs border-t border-slate-800 w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            
-            <!-- Col 1: Brand Info -->
-            <div class="lg:col-span-1">
-                <a href="index.html" class="inline-block mb-3">
-                    <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ Logo" class="h-10 w-auto object-contain">
-                </a>
-                <p class="text-slate-400 text-[11px] leading-relaxed mb-4">
-                    Your Trusted Online Store.<br>
-                    Quality products, great prices, fast delivery. Shop with confidence at QuickBuy HQ.
-                </p>
-                <div class="flex space-x-3 text-slate-400">
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="#" class="hover:text-white transition"><i class="fa-brands fa-tiktok"></i></a>
-                </div>
-            </div>
-
-            <!-- Col 2: Quick Links -->
-            <div>
-                <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Quick Links</h4>
-                <ul class="space-y-2 text-slate-400">
-                    <li><a href="#" class="hover:text-white transition">Home</a></li>
-                    <li><a href="#" class="hover:text-white transition">Shop</a></li>
-                    <li><a href="#categories-section" class="hover:text-white transition">Categories</a></li>
-                    <li><a href="#featured-section" class="hover:text-white transition">Deals</a></li>
-                    <li><a href="#" class="hover:text-white transition">Track Order</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 3: Customer Service -->
-            <div>
-                <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Customer Service</h4>
-                <ul class="space-y-2 text-slate-400">
-                    <li><a href="#" class="hover:text-white transition">Help Center</a></li>
-                    <li><a href="#" class="hover:text-white transition">Shipping Info</a></li>
-                    <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
-                    <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 4: Contact Us -->
-            <div>
-                <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Contact Us</h4>
-                <ul class="space-y-2 text-slate-400">
-                    <li class="flex items-center"><i class="fa-solid fa-phone mr-2 text-slate-500"></i> +234 801 234 5678</li>
-                    <li class="flex items-center"><i class="fa-solid fa-envelope mr-2 text-slate-500"></i> support@quickbuyhq.com</li>
-                    <li class="flex items-center"><i class="fa-solid fa-location-dot mr-2 text-slate-500"></i> Lagos, Nigeria</li>
-                </ul>
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="bg-slate-800 px-2 py-1 rounded text-[10px] text-slate-400 border border-slate-700">VISA</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-[10px] text-slate-400 border border-slate-700">MasterCard</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-[10px] text-slate-400 border border-slate-700">Verve</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-[10px] text-slate-400 border border-slate-700">PayPal</span>
-                </div>
-            </div>
-
-            <!-- Col 5: Newsletter -->
-            <div>
-                <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Subscribe to Our Newsletter</h4>
-                <p class="text-slate-400 text-[11px] mb-3">Get the latest deals, updates and offers.</p>
-                <form id="newsletter-form" class="space-y-2">
-                    <input id="newsletter-email" type="email" required placeholder="Enter your email address" class="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-xs">
-                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 rounded transition">Subscribe</button>
-                </form>
-                <p id="newsletter-msg" class="text-[10px] mt-2 hidden"></p>
-            </div>
-
-        </div>
-
-        <!-- Sub-footer -->
-        <div class="border-t border-slate-800 py-4 text-slate-500 text-[11px]">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2">
-                <p>&copy; 2026 QuickBuy HQ. All rights reserved.</p>
-                <div class="flex space-x-4">
-                    <span>Shop Smart</span>
-                    <span>•</span>
-                    <span>Shop Quick</span>
-                    <span>•</span>
-                    <span>Shop QuickBuy HQ</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Supabase Integration Script -->
-    <script>
-        // Supabase Initialization
-        const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // Mobile Menu Toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
-
-        // App State
-        let cart = JSON.parse(localStorage.getItem('qb_cart')) || [];
-        let wishlist = JSON.parse(localStorage.getItem('qb_wishlist')) || [];
-
-        function updateCounts() {
-            document.getElementById('cart-count').innerText = cart.length;
-            document.getElementById('wishlist-count').innerText = wishlist.length;
-        }
-
-        // Fetch Categories from Supabase
-        async function loadCategories() {
-            const container = document.getElementById('categories-container');
-            try {
-                const { data: categories, error } = await supabase
-                    .from('categories')
-                    .select('*')
-                    .order('name');
-
-                if (error) throw error;
-
-                if (!categories || categories.length === 0) {
-                    container.innerHTML = '<p class="col-span-full text-center text-slate-400">No categories found.</p>';
-                    return;
-                }
-
-                container.innerHTML = categories.map(cat => `
-                    <a href="#featured-section" onclick="filterByCategory('${cat.name}')" class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition text-center flex flex-col items-center group">
-                        <div class="h-20 w-20 mb-3 flex items-center justify-center bg-slate-50 rounded-lg group-hover:scale-105 transition">
-                            <img src="${cat.image_url || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200'}" alt="${cat.name}" class="h-12 w-12 object-contain">
-                        </div>
-                        <h3 class="font-bold text-sm text-slate-800">${cat.name}</h3>
-                        <span class="text-xs text-slate-400">${cat.subtitle || 'Explore Products'}</span>
-                    </a>
-                `).join('');
-            } catch (err) {
-                console.error("Error loading categories:", err.message);
-                container.innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load categories.</p>';
-            }
-        }
-
-        // Fetch Products from Supabase
-        async function loadProducts(query = '', categoryFilter = '') {
-            const container = document.getElementById('products-container');
-            container.innerHTML = '<div class="col-span-full text-center py-12 text-slate-400">Loading products...</div>';
-
-            try {
-                let dbQuery = supabase.from('products').select('*');
-
-                if (query) {
-                    dbQuery = dbQuery.ilike('title', `%${query}%`);
-                }
-                if (categoryFilter) {
-                    dbQuery = dbQuery.eq('category', categoryFilter);
-                }
-
-                const { data: products, error } = await dbQuery;
-
-                if (error) throw error;
-
-                if (!products || products.length === 0) {
-                    container.innerHTML = '<p class="col-span-full text-center text-slate-400 py-8">No products found matching your search.</p>';
-                    return;
-                }
-
-                container.innerHTML = products.map(prod => {
-                    const discount = prod.original_price ? Math.round(((prod.original_price - prod.price) / prod.original_price) * 100) : 0;
-                    return `
-                        <div class="bg-white rounded-xl border border-slate-100 p-4 shadow-sm hover:shadow-md transition relative flex flex-col justify-between">
-                            ${discount > 0 ? `<span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">-${discount}%</span>` : ''}
-                            <div class="h-40 flex items-center justify-center mb-3">
-                                <img src="${prod.image_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300'}" alt="${prod.title}" class="h-full object-contain">
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-sm text-slate-800 truncate" title="${prod.title}">${prod.title}</h3>
-                                <p class="text-xs text-slate-400 mb-1">${prod.category || 'General'}</p>
-                                <div class="flex items-center text-amber-400 text-xs mb-2">
-                                    <i class="fa-solid fa-star"></i>
-                                    <span class="text-slate-500 text-[10px] ml-1 font-medium">${prod.rating || '4.5'} (${prod.reviews_count || 12})</span>
-                                </div>
-                                <div class="flex items-baseline space-x-2">
-                                    <span class="text-base font-extrabold text-slate-900">₦${Number(prod.price).toLocaleString()}</span>
-                                    ${prod.original_price ? `<span class="text-xs text-slate-400 line-through">₦${Number(prod.original_price).toLocaleString()}</span>` : ''}
-                                </div>
-                                <span class="text-[10px] text-emerald-600 font-semibold block mt-0.5">• In Stock</span>
-                            </div>
-                            <div class="flex items-center space-x-2 mt-4">
-                                <button onclick="addToCart('${prod.id}', '${prod.title}', ${prod.price})" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-lg transition">Add to Cart</button>
-                                <button onclick="toggleWishlist('${prod.id}')" class="p-2 border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 transition"><i class="fa-regular fa-heart text-xs"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (err) {
-                console.error("Error loading products:", err.message);
-                container.innerHTML = '<p class="col-span-full text-center text-red-500 py-8">Failed to fetch products from Supabase database.</p>';
-            }
-        }
-
-        // Search Handlers
-        function executeSearch(inputElementId) {
-            const query = document.getElementById(inputElementId).value.trim();
-            loadProducts(query);
-        }
-
-        document.getElementById('desktop-search-btn').addEventListener('click', () => executeSearch('desktop-search-input'));
-        document.getElementById('mobile-search-btn').addEventListener('click', () => executeSearch('mobile-search-input'));
-
-        function filterByCategory(catName) {
-            loadProducts('', catName);
-        }
-
-        // Cart & Wishlist Logic
-        function addToCart(id, title, price) {
-            cart.push({ id, title, price });
-            localStorage.setItem('qb_cart', JSON.stringify(cart));
-            updateCounts();
-            alert(`Added "${title}" to your cart!`);
-        }
-
-        function toggleWishlist(id) {
-            if (!wishlist.includes(id)) {
-                wishlist.push(id);
-                alert("Added to wishlist!");
-            } else {
-                wishlist = wishlist.filter(item => item !== id);
-                alert("Removed from wishlist.");
-            }
-            localStorage.setItem('qb_wishlist', JSON.stringify(wishlist));
-            updateCounts();
-        }
-
-        // Newsletter Form Submission to Supabase
-        document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('newsletter-email');
-            const msg = document.getElementById('newsletter-msg');
-            const email = emailInput.value.trim();
-
-            try {
-                const { error } = await supabase.from('newsletter_subscribers').insert([{ email }]);
-                if (error) throw error;
-
-                msg.innerText = "Thank you for subscribing!";
-                msg.className = "text-[10px] mt-2 text-emerald-400";
-                msg.classList.remove('hidden');
-                emailInput.value = '';
-            } catch (err) {
-                msg.innerText = "Subscription failed or email already registered.";
-                msg.className = "text-[10px] mt-2 text-red-400";
-                msg.classList.remove('hidden');
-            }
-        });
-
-        // Initial Load
-        updateCounts();
-        loadCategories();
-        loadProducts();
-    </script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCategories();
+      loadProducts();
+      updateCartCount();
+    });
+  </script>
 </body>
 </html>
