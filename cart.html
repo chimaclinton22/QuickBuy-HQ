@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Cart – QuickBuy HQ</title>
+  <meta name="description" content="Review your cart and proceed to checkout at QuickBuy HQ." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Announcement Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2.5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-y-1">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-orange-400"></i>
+        <span>Free Shipping on Orders Over ₦50,000</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>Trusted by 100,000+ Happy Customers</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-headset text-orange-400"></i>
+        <span>24/7 Customer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex-shrink-0">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+
+        <div class="hidden md:flex flex-1 max-w-xl mx-8">
+          <div class="relative w-full flex">
+            <input type="text" placeholder="Search products..." 
+                   class="w-full bg-slate-100 border border-transparent focus:border-brand-blue focus:bg-white rounded-l-xl py-2.5 pl-4 pr-4 text-sm outline-none">
+            <button class="bg-brand-blue hover:bg-brand-dark text-white px-5 rounded-r-xl">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5 text-slate-700">
+          <a href="wishlist.html" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-regular fa-heart text-xl"></i>
+            <span class="text-[11px] mt-0.5">Wishlist</span>
+            <span id="wishlist-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="cart.html" class="flex flex-col items-center text-brand-blue transition relative">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[11px] mt-0.5 hidden sm:block">Cart</span>
+            <span id="cart-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="account.html" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition">
+            <i class="fa-regular fa-user text-xl"></i>
+            <span class="text-[11px] mt-0.5">Account</span>
+          </a>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 py-3 border-t border-slate-100 text-sm font-medium text-slate-600">
+        <a href="shop.html" class="hover:text-brand-blue transition">Shop</a>
+        <a href="index.html#categories" class="hover:text-brand-blue transition">Categories</a>
+        <a href="index.html#featured" class="hover:text-brand-blue transition">Deals</a>
+        <a href="track-order.html" class="hover:text-brand-blue transition">Track Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <nav class="text-sm text-slate-500">
+        <a href="index.html" class="hover:text-brand-blue">Home</a>
+        <span class="mx-2">/</span>
+        <span class="text-slate-800 font-medium">Shopping Cart</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Shopping Cart</h1>
+      <a href="shop.html" class="text-brand-blue font-semibold text-sm hover:underline flex items-center gap-1">
+        <i class="fa-solid fa-arrow-left text-xs"></i> Continue Shopping
+      </a>
+    </div>
+
+    <!-- Empty Cart State -->
+    <div id="empty-cart" class="hidden py-24 text-center">
+      <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="fa-solid fa-bag-shopping text-4xl text-slate-300"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Your cart is empty</h2>
+      <p class="text-slate-500 mb-8 max-w-md mx-auto">Looks like you haven’t added any products yet. Start shopping and fill your cart with quality items.</p>
+      <a href="shop.html" class="inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-dark text-white font-bold px-8 py-3.5 rounded-xl transition">
+        <i class="fa-solid fa-store"></i>
+        Start Shopping
+      </a>
+    </div>
+
+    <!-- Cart Content -->
+    <div id="cart-content" class="hidden grid lg:grid-cols-3 gap-8">
+
+      <!-- Cart Items -->
+      <div class="lg:col-span-2 space-y-4" id="cart-items">
+        <!-- Dynamic cart items will be inserted here -->
+      </div>
+
+      <!-- Order Summary -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sticky top-28">
+          <h2 class="text-lg font-bold text-slate-900 mb-6">Order Summary</h2>
+
+          <div class="space-y-4 mb-6">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-600">Subtotal</span>
+              <span id="subtotal" class="font-semibold text-slate-900">₦0</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-600">Delivery Fee</span>
+              <span id="delivery-fee" class="font-semibold text-slate-900">₦3,000</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-600">Discount</span>
+              <span id="discount" class="font-semibold text-emerald-600">-₦0</span>
+            </div>
+            <div class="border-t border-slate-100 pt-4 flex justify-between">
+              <span class="font-bold text-slate-900">Total</span>
+              <span id="total" class="text-xl font-black text-slate-900">₦0</span>
+            </div>
+          </div>
+
+          <!-- Free Shipping Notice -->
+          <div id="shipping-notice" class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6 text-sm">
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-truck-fast text-brand-blue mt-0.5"></i>
+              <div>
+                <p class="font-medium text-slate-800">Free shipping on orders over ₦50,000</p>
+                <p id="shipping-progress" class="text-slate-500 text-xs mt-1"></p>
+              </div>
+            </div>
+          </div>
+
+          <a href="checkout.html" id="checkout-btn"
+             class="w-full bg-brand-blue hover:bg-brand-dark text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 text-base shadow-lg shadow-brand-blue/20">
+            Proceed to Checkout
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+
+          <div class="mt-6 flex items-center justify-center gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-1.5">
+              <i class="fa-solid fa-lock"></i>
+              <span>Secure Checkout</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Buyer Protection</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div>
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-10 mb-4 object-contain">
+          <p class="text-sm leading-relaxed">Your trusted online store for quality products and fast delivery across Nigeria.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+            <li><a href="shop.html" class="hover:text-white transition">Shop</a></li>
+            <li><a href="track-order.html" class="hover:text-white transition">Track Order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Customer Service</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition">Shipping Info</a></li>
+            <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Contact</h4>
+          <ul class="space-y-3 text-sm">
+            <li>+234 801 234 5678</li>
+            <li>support@quickbuyhq.com</li>
+            <li>Lagos, Nigeria</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
+      © 2026 QuickBuy HQ. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // ========== STATE ==========
+    let cart = JSON.parse(localStorage.getItem('qb_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('qb_wishlist') || '[]');
+
+    const DELIVERY_FEE = 3000;
+    const FREE_SHIPPING_THRESHOLD = 50000;
+
+    function updateCounts() {
+      const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      document.getElementById('cart-count').textContent = totalItems;
+      document.getElementById('wishlist-count').textContent = wishlist.length;
+    }
+
+    // ========== RENDER CART ==========
+    function renderCart() {
+      const emptyCart = document.getElementById('empty-cart');
+      const cartContent = document.getElementById('cart-content');
+      const cartItems = document.getElementById('cart-items');
+
+      if (!cart || cart.length === 0) {
+        emptyCart.classList.remove('hidden');
+        cartContent.classList.add('hidden');
+        updateCounts();
+        return;
+      }
+
+      emptyCart.classList.add('hidden');
+      cartContent.classList.remove('hidden');
+
+      cartItems.innerHTML = cart.map((item, index) => {
+        const itemTotal = item.price * (item.quantity || 1);
+        const image = item.image || 'https://placehold.co/120x120?text=Product';
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col sm:flex-row gap-5" data-index="${index}">
+            <!-- Image -->
+            <a href="product.html?id=${item.id}" class="flex-shrink-0">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 bg-slate-50 rounded-xl overflow-hidden">
+                <img src="${image}" alt="${item.name}" class="w-full h-full object-contain p-2">
+              </div>
+            </a>
+
+            <!-- Details -->
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between gap-4">
+                <div>
+                  <a href="product.html?id=${item.id}" class="font-semibold text-slate-900 hover:text-brand-blue transition line-clamp-2">
+                    ${item.name}
+                  </a>
+                  <p class="text-sm text-slate-500 mt-1">Unit Price: ₦${Number(item.price).toLocaleString()}</p>
+                </div>
+                <button onclick="removeItem(${index})" 
+                        class="text-slate-400 hover:text-red-500 transition flex-shrink-0" title="Remove">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-4 mt-4">
+                <!-- Quantity -->
+                <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden">
+                  <button onclick="updateQuantity(${index}, -1)" 
+                          class="w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-medium">−</button>
+                  <span class="w-12 text-center font-semibold">${item.quantity || 1}</span>
+                  <button onclick="updateQuantity(${index}, 1)" 
+                          class="w-10 h-10 flex items-center justify-center text-slate-600 hover:bg-slate-50 font-medium">+</button>
+                </div>
+
+                <!-- Item Total -->
+                <div class="text-right">
+                  <p class="text-lg font-bold text-slate-900">₦${itemTotal.toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateSummary();
+      updateCounts();
+    }
+
+    // ========== UPDATE SUMMARY ==========
+    function updateSummary() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+      let delivery = DELIVERY_FEE;
+      let discount = 0;
+
+      // Free shipping over threshold
+      if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+        delivery = 0;
+      }
+
+      const total = subtotal + delivery - discount;
+
+      document.getElementById('subtotal').textContent = `₦${subtotal.toLocaleString()}`;
+      document.getElementById('delivery-fee').textContent = delivery === 0 ? 'FREE' : `₦${delivery.toLocaleString()}`;
+      document.getElementById('discount').textContent = `-₦${discount.toLocaleString()}`;
+      document.getElementById('total').textContent = `₦${total.toLocaleString()}`;
+
+      // Shipping progress message
+      const progressEl = document.getElementById('shipping-progress');
+      if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+        progressEl.textContent = '🎉 You qualify for free shipping!';
+      } else {
+        const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+        progressEl.textContent = `Add ₦${remaining.toLocaleString()} more to get free shipping`;
+      }
+    }
+
+    // ========== QUANTITY & REMOVE ==========
+    function updateQuantity(index, change) {
+      if (!cart[index]) return;
+
+      cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
+      localStorage.setItem('qb_cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function removeItem(index) {
+      if (!confirm('Remove this item from your cart?')) return;
+      cart.splice(index, 1);
+      localStorage.setItem('qb_cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    // ========== INIT ==========
+    updateCounts();
+    renderCart();
+  </script>
+</body>
+</html>
