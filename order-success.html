@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmed – QuickBuy HQ</title>
+  <meta name="description" content="Your order has been successfully placed at QuickBuy HQ." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+        <div class="flex items-center gap-2 text-sm text-emerald-600 font-medium">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Order Confirmed</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+
+    <!-- Success Card -->
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
+      
+      <!-- Top Success Banner -->
+      <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-10 text-center text-white">
+        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-5">
+          <i class="fa-solid fa-check text-4xl"></i>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black mb-2">Order Confirmed!</h1>
+        <p class="text-emerald-100 text-sm sm:text-base">Thank you for shopping with QuickBuy HQ</p>
+      </div>
+
+      <!-- Order Details -->
+      <div class="p-8 sm:p-10">
+        
+        <div class="text-center mb-8">
+          <p class="text-slate-500 text-sm mb-1">Order Number</p>
+          <p id="order-number" class="text-2xl font-black text-slate-900 tracking-wide">QHQ-000000</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-6 mb-8 space-y-4">
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">Customer</span>
+            <span id="customer-name" class="font-semibold text-slate-800">—</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">Email</span>
+            <span id="customer-email" class="font-semibold text-slate-800">—</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">Total Amount</span>
+            <span id="order-total" class="font-bold text-slate-900 text-base">₦0</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">Payment Method</span>
+            <span id="payment-method" class="font-semibold text-slate-800 capitalize">—</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-500">Estimated Delivery</span>
+            <span id="estimated-delivery" class="font-semibold text-emerald-600">—</span>
+          </div>
+        </div>
+
+        <!-- Order Items Preview -->
+        <div class="mb-8">
+          <h3 class="font-bold text-sm uppercase tracking-wider text-slate-900 mb-4">Order Items</h3>
+          <div id="order-items" class="space-y-3">
+            <!-- Dynamic items -->
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a id="track-order-btn" href="track-order.html"
+             class="flex-1 bg-brand-blue hover:bg-brand-dark text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 text-center">
+            <i class="fa-solid fa-location-dot"></i>
+            Track Order
+          </a>
+          <a href="shop.html"
+             class="flex-1 bg-white border-2 border-slate-200 hover:border-brand-blue text-slate-700 hover:text-brand-blue font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 text-center">
+            Continue Shopping
+          </a>
+        </div>
+
+        <!-- Note -->
+        <p class="text-center text-xs text-slate-400 mt-8">
+          A confirmation email has been sent to your email address.<br>
+          You can track your order anytime using the order number above.
+        </p>
+      </div>
+    </div>
+
+    <!-- Trust Section -->
+    <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+      <div class="flex flex-col items-center">
+        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue mb-3">
+          <i class="fa-solid fa-truck-fast"></i>
+        </div>
+        <p class="font-semibold text-sm">Fast Delivery</p>
+        <p class="text-xs text-slate-500 mt-1">Across Nigeria</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue mb-3">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <p class="font-semibold text-sm">Secure Payment</p>
+        <p class="text-xs text-slate-500 mt-1">100% Protected</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue mb-3">
+          <i class="fa-solid fa-headset"></i>
+        </div>
+        <p class="font-semibold text-sm">24/7 Support</p>
+        <p class="text-xs text-slate-500 mt-1">We're here to help</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-center text-xs">
+      <p>© 2026 QuickBuy HQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ========== LOAD ORDER ==========
+    function loadOrder() {
+      const params = new URLSearchParams(window.location.search);
+      const orderIdFromUrl = params.get('order');
+
+      const orderData = localStorage.getItem('qb_last_order');
+      
+      if (!orderData) {
+        // Fallback if no order found
+        document.getElementById('order-number').textContent = orderIdFromUrl || 'QHQ-000000';
+        return;
+      }
+
+      const order = JSON.parse(orderData);
+
+      // Fill order details
+      document.getElementById('order-number').textContent = order.id || orderIdFromUrl || 'QHQ-000000';
+      document.getElementById('customer-name').textContent = order.customer?.fullName || '—';
+      document.getElementById('customer-email').textContent = order.customer?.email || '—';
+      document.getElementById('order-total').textContent = `₦${Number(order.total || 0).toLocaleString()}`;
+      
+      // Payment method label
+      const paymentLabels = {
+        card: 'Card Payment',
+        bank_transfer: 'Bank Transfer',
+        cash_on_delivery: 'Cash on Delivery'
+      };
+      document.getElementById('payment-method').textContent = paymentLabels[order.paymentMethod] || order.paymentMethod || '—';
+
+      // Estimated delivery (simple calculation)
+      const today = new Date();
+      const deliveryDays = order.deliveryMethod === 'express' ? 2 : 5;
+      const deliveryDate = new Date(today);
+      deliveryDate.setDate(today.getDate() + deliveryDays);
+      
+      const options = { month: 'short', day: 'numeric', year: 'numeric' };
+      document.getElementById('estimated-delivery').textContent = deliveryDate.toLocaleDateString('en-US', options);
+
+      // Order items
+      const itemsContainer = document.getElementById('order-items');
+      if (order.items && order.items.length > 0) {
+        itemsContainer.innerHTML = order.items.map(item => `
+          <div class="flex items-center gap-4 py-3 border-b border-slate-100 last:border-0">
+            <div class="w-14 h-14 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0">
+              <img src="${item.image || 'https://placehold.co/80x80?text=Product'}" 
+                   alt="${item.name}" class="w-full h-full object-contain p-1">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-sm text-slate-800 line-clamp-1">${item.name}</p>
+              <p class="text-xs text-slate-500">Qty: ${item.quantity || 1}</p>
+            </div>
+            <p class="font-semibold text-sm text-slate-900">
+              ₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}
+            </p>
+          </div>
+        `).join('');
+      }
+
+      // Update track order link
+      document.getElementById('track-order-btn').href = `track-order.html?order=${order.id}`;
+    }
+
+    // ========== INIT ==========
+    loadOrder();
+  </script>
+</body>
+</html>
