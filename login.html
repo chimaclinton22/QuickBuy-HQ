@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In – QuickBuy HQ</title>
+  <meta name="description" content="Sign in to your QuickBuy HQ account." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+        <a href="shop.html" class="text-sm font-medium text-slate-600 hover:text-brand-blue transition">
+          Continue Shopping →
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12 sm:py-16">
+    <div class="w-full max-w-md">
+
+      <!-- Card -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-xl p-8 sm:p-10">
+        
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-12 mx-auto mb-6 object-contain">
+          <h1 class="text-2xl font-black text-slate-900 mb-2">Welcome Back</h1>
+          <p class="text-slate-500 text-sm">Sign in to your QuickBuy HQ account</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="hidden mb-5 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3">
+          <i class="fa-solid fa-circle-exclamation mr-2"></i>
+          <span id="error-text">Invalid email or password</span>
+        </div>
+
+        <!-- Success Message -->
+        <div id="success-message" class="hidden mb-5 bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm rounded-xl px-4 py-3">
+          <i class="fa-solid fa-circle-check mr-2"></i>
+          <span id="success-text">Signed in successfully!</span>
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" class="space-y-5">
+          
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+              <input id="email" type="email" required placeholder="you@example.com"
+                     class="w-full border border-slate-200 rounded-xl pl-11 pr-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition">
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
+              <a href="forgot-password.html" class="text-xs font-medium text-brand-blue hover:underline">
+                Forgot password?
+              </a>
+            </div>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input id="password" type="password" required placeholder="••••••••"
+                     class="w-full border border-slate-200 rounded-xl pl-11 pr-12 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition">
+              <button type="button" id="toggle-password" 
+                      class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember Me -->
+          <div class="flex items-center gap-2">
+            <input id="remember" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue">
+            <label for="remember" class="text-sm text-slate-600">Remember me</label>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" id="submit-btn"
+                  class="w-full bg-brand-blue hover:bg-brand-dark text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-blue/20">
+            <span id="btn-text">Sign In</span>
+            <i id="btn-spinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative my-8">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-slate-100"></div>
+          </div>
+          <div class="relative flex justify-center text-xs">
+            <span class="bg-white px-3 text-slate-400">or</span>
+          </div>
+        </div>
+
+        <!-- Register Link -->
+        <p class="text-center text-sm text-slate-600">
+          Don’t have an account?
+          <a href="register.html" class="font-semibold text-brand-blue hover:underline">Create Account</a>
+        </p>
+      </div>
+
+      <!-- Back to store -->
+      <p class="text-center text-sm text-slate-500 mt-8">
+        <a href="index.html" class="hover:text-brand-blue transition flex items-center justify-center gap-1">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          Back to QuickBuy HQ
+        </a>
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 text-center text-xs text-slate-400">
+    <p>© 2026 QuickBuy HQ. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========== TOGGLE PASSWORD ==========
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      const icon = document.querySelector('#toggle-password i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+
+    // ========== LOGIN ==========
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorBox = document.getElementById('error-message');
+      const successBox = document.getElementById('success-message');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+      const submitBtn = document.getElementById('submit-btn');
+
+      // Reset messages
+      errorBox.classList.add('hidden');
+      successBox.classList.add('hidden');
+
+      // Loading state
+      btnText.textContent = 'Signing in...';
+      btnSpinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        // Success
+        successBox.classList.remove('hidden');
+        document.getElementById('success-text').textContent = 'Signed in successfully! Redirecting...';
+
+        // Redirect after short delay
+        setTimeout(() => {
+          window.location.href = 'account.html';
+        }, 1200);
+
+      } catch (err) {
+        errorBox.classList.remove('hidden');
+        document.getElementById('error-text').textContent = err.message || 'Invalid email or password';
+        
+        btnText.textContent = 'Sign In';
+        btnSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
