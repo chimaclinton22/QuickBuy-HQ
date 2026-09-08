@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop by Category – QuickBuy HQ</title>
+  <meta name="description" content="Browse all product categories at QuickBuy HQ." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .category-card { transition: all 0.3s ease; }
+    .category-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Announcement Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2.5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-y-1">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-orange-400"></i>
+        <span>Free Shipping on Orders Over ₦50,000</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>Trusted by 100,000+ Happy Customers</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-headset text-orange-400"></i>
+        <span>24/7 Customer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex-shrink-0">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+
+        <div class="hidden md:flex flex-1 max-w-xl mx-8">
+          <div class="relative w-full flex">
+            <input type="text" placeholder="Search products..." 
+                   class="w-full bg-slate-100 border border-transparent focus:border-brand-blue focus:bg-white rounded-l-xl py-2.5 pl-4 pr-4 text-sm outline-none">
+            <button class="bg-brand-blue hover:bg-brand-dark text-white px-5 rounded-r-xl">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5 text-slate-700">
+          <a href="cart.html" class="flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[11px] mt-0.5 hidden sm:block">Cart</span>
+            <span id="cart-count" class="absolute -top-1.5 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">0</span>
+          </a>
+          <a href="account.html" class="hidden sm:flex flex-col items-center hover:text-brand-blue transition">
+            <i class="fa-regular fa-user text-xl"></i>
+            <span class="text-[11px] mt-0.5">Account</span>
+          </a>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 py-3 border-t border-slate-100 text-sm font-medium text-slate-600">
+        <a href="shop.html" class="hover:text-brand-blue transition">Shop</a>
+        <a href="categories.html" class="text-brand-blue font-semibold">Categories</a>
+        <a href="deals.html" class="hover:text-brand-blue transition">Deals</a>
+        <a href="track-order.html" class="hover:text-brand-blue transition">Track Order</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <nav class="text-sm text-slate-500">
+        <a href="index.html" class="hover:text-brand-blue">Home</a>
+        <span class="mx-2">/</span>
+        <span class="text-slate-800 font-medium">Categories</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+
+    <div class="text-center mb-12">
+      <p class="text-orange-500 text-xs font-bold uppercase tracking-wider mb-2">Browse Collection</p>
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3">Shop by Category</h1>
+      <p class="text-slate-500 max-w-xl mx-auto">Explore our wide range of quality products carefully organized for easy shopping.</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-state" class="py-20 text-center text-slate-400">
+      <i class="fa-solid fa-spinner fa-spin text-3xl mb-4"></i>
+      <p>Loading categories...</p>
+    </div>
+
+    <!-- Categories Grid -->
+    <div id="categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+      <!-- Dynamic categories -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden py-20 text-center">
+      <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-5">
+        <i class="fa-solid fa-folder-open text-3xl text-slate-300"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">No categories found</h3>
+      <p class="text-slate-500">Categories will appear here once added.</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div>
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-10 mb-4 object-contain">
+          <p class="text-sm leading-relaxed">Your trusted online store for quality products and fast delivery across Nigeria.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+            <li><a href="shop.html" class="hover:text-white transition">Shop</a></li>
+            <li><a href="categories.html" class="hover:text-white transition">Categories</a></li>
+            <li><a href="track-order.html" class="hover:text-white transition">Track Order</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Customer Service</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-white transition">Shipping Info</a></li>
+            <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Contact</h4>
+          <ul class="space-y-3 text-sm">
+            <li>+234 801 234 5678</li>
+            <li>support@quickbuyhq.com</li>
+            <li>Lagos, Nigeria</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
+      © 2026 QuickBuy HQ. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========== CART COUNT ==========
+    const cart = JSON.parse(localStorage.getItem('qb_cart') || '[]');
+    document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    // ========== LOAD CATEGORIES ==========
+    async function loadCategories() {
+      const loading = document.getElementById('loading-state');
+      const grid = document.getElementById('categories-grid');
+      const empty = document.getElementById('empty-state');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('categories')
+          .select('id, name, slug, description, image_url, sort_order')
+          .eq('is_active', true)
+          .order('sort_order');
+
+        loading.classList.add('hidden');
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        grid.classList.remove('hidden');
+
+        // Default images if none provided
+        const defaultImages = {
+          electronics: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600',
+          phones: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600',
+          accessories: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=600',
+          fashion: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600',
+          'home-living': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600',
+          beauty: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600'
+        };
+
+        grid.innerHTML = data.map(cat => {
+          const image = cat.image_url || defaultImages[cat.slug] || 'https://placehold.co/600x400?text=Category';
+
+          return `
+            <a href="shop.html?category=${cat.slug}" 
+               class="category-card group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+              <div class="aspect-[4/3] overflow-hidden bg-slate-100">
+                <img src="${image}" alt="${cat.name}" 
+                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-blue transition mb-2">
+                  ${cat.name}
+                </h3>
+                <p class="text-sm text-slate-500 line-clamp-2 mb-4">
+                  ${cat.description || 'Explore our collection of quality products.'}
+                </p>
+                <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue">
+                  Shop Now
+                  <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+                </span>
+              </div>
+            </a>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error(err);
+        loading.classList.add('hidden');
+        empty.classList.remove('hidden');
+      }
+    }
+
+    // ========== INIT ==========
+    loadCategories();
+  </script>
+</body>
+</html>
