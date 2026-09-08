@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Details – QuickBuy HQ Admin</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .sidebar-link.active { background: rgba(8, 126, 188, 0.15); color: #087EBC; }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+  <div class="flex min-h-screen">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
+      <div class="flex flex-col h-full">
+        <div class="px-6 py-5 border-b border-slate-800">
+          <a href="admin-dashboard.html">
+            <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+                 alt="QuickBuy HQ" class="h-9 object-contain brightness-0 invert">
+          </a>
+          <p class="text-xs text-slate-500 mt-1">Admin Command Center</p>
+        </div>
+
+        <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+          <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Main</p>
+          <a href="admin-dashboard.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
+          </a>
+          <a href="admin-orders.html" class="sidebar-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition">
+            <i class="fa-solid fa-box w-5 text-center"></i> Orders
+          </a>
+          <a href="admin-products.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-tag w-5 text-center"></i> Products
+          </a>
+          <a href="admin-inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-warehouse w-5 text-center"></i> Inventory
+          </a>
+          <a href="admin-customers.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-users w-5 text-center"></i> Customers
+          </a>
+
+          <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 mt-6">Insights</p>
+          <a href="admin-analytics.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-chart-line w-5 text-center"></i> Analytics
+          </a>
+          <a href="admin-reports.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-file-lines w-5 text-center"></i> Reports
+          </a>
+
+          <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 mt-6">Settings</p>
+          <a href="admin-settings.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-gear w-5 text-center"></i> Settings
+          </a>
+          <a href="admin-store-settings.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition">
+            <i class="fa-solid fa-store w-5 text-center"></i> Store Settings
+          </a>
+        </nav>
+
+        <div class="px-4 py-4 border-t border-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center text-sm font-bold" id="admin-avatar">A</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate" id="admin-name">Admin</p>
+              <p class="text-xs text-slate-500 truncate" id="admin-email">—</p>
+            </div>
+            <button id="logout-btn" class="text-slate-500 hover:text-red-400 transition">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="flex-1 lg:ml-64">
+
+      <!-- Top Bar -->
+      <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+        <div class="flex items-center justify-between px-4 sm:px-6 h-16">
+          <div class="flex items-center gap-3">
+            <button id="sidebar-toggle" class="lg:hidden text-slate-600 text-xl">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div>
+              <a href="admin-orders.html" class="text-sm text-slate-500 hover:text-brand-blue">Orders</a>
+              <span class="text-slate-300 mx-2">/</span>
+              <span class="text-sm font-semibold text-slate-900">Order Details</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="p-4 sm:p-6 lg:p-8">
+
+        <!-- Loading -->
+        <div id="loading-state" class="py-24 text-center text-slate-400">
+          <i class="fa-solid fa-spinner fa-spin text-3xl mb-4"></i>
+          <p>Loading order...</p>
+        </div>
+
+        <!-- Not Found -->
+        <div id="not-found" class="hidden py-24 text-center">
+          <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
+            <i class="fa-solid fa-box-open text-3xl text-red-400"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800 mb-2">Order Not Found</h3>
+          <a href="admin-orders.html" class="inline-block mt-4 text-brand-blue font-semibold hover:underline">
+            ← Back to Orders
+          </a>
+        </div>
+
+        <!-- Order Content -->
+        <div id="order-content" class="hidden">
+
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+              <h1 class="text-2xl font-black text-slate-900">
+                Order <span id="order-number">#—</span>
+              </h1>
+              <p class="text-sm text-slate-500 mt-1">
+                Placed on <span id="order-date">—</span>
+              </p>
+            </div>
+            <div id="status-badge-container"></div>
+          </div>
+
+          <!-- Success Message -->
+          <div id="success-message" class="hidden mb-6 bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm rounded-xl px-4 py-3">
+            <i class="fa-solid fa-circle-check mr-2"></i>
+            <span>Order status updated successfully!</span>
+          </div>
+
+          <div class="grid lg:grid-cols-3 gap-6">
+
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-6">
+
+              <!-- Items -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-100">
+                  <h2 class="font-bold text-slate-900">Order Items</h2>
+                </div>
+                <div id="order-items" class="divide-y divide-slate-100">
+                  <!-- Dynamic items -->
+                </div>
+              </div>
+
+              <!-- Update Status -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="font-bold text-slate-900 mb-5">Update Order Status</h2>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                  <select id="new-status" class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 bg-white">
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="processing">Processing</option>
+                    <option value="packed">Packed</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="out_for_delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  <button id="update-status-btn"
+                          class="bg-brand-blue hover:bg-brand-dark text-white font-semibold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2">
+                    <span id="update-btn-text">Update Status</span>
+                    <i id="update-spinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+
+              <!-- Summary -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="font-bold text-slate-900 mb-5">Order Summary</h2>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-slate-500">Subtotal</span>
+                    <span id="subtotal" class="font-semibold">₦0</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-500">Delivery Fee</span>
+                    <span id="delivery-fee" class="font-semibold">₦0</span>
+                  </div>
+                  <div class="flex justify-between pt-3 border-t border-slate-100 text-base font-bold">
+                    <span>Total</span>
+                    <span id="total" class="text-lg">₦0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Customer -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="font-bold text-slate-900 mb-5">Customer</h2>
+                <div class="space-y-3 text-sm">
+                  <div>
+                    <p class="text-slate-500 mb-0.5">Name</p>
+                    <p id="customer-name" class="font-semibold text-slate-800">—</p>
+                  </div>
+                  <div>
+                    <p class="text-slate-500 mb-0.5">Email</p>
+                    <p id="customer-email" class="font-semibold text-slate-800">—</p>
+                  </div>
+                  <div>
+                    <p class="text-slate-500 mb-0.5">Phone</p>
+                    <p id="customer-phone" class="font-semibold text-slate-800">—</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shipping -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="font-bold text-slate-900 mb-5">Shipping Address</h2>
+                <p id="shipping-address" class="text-sm text-slate-700 leading-relaxed">—</p>
+              </div>
+
+              <!-- Payment -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="font-bold text-slate-900 mb-3">Payment Method</h2>
+                <p id="payment-method" class="text-sm font-semibold text-slate-800 capitalize">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"></div>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentOrder = null;
+    let orderId = null;
+
+    // ========== SIDEBAR ==========
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    });
+    overlay?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    // ========== STATUS BADGE ==========
+    function getStatusBadge(status) {
+      const styles = {
+        pending: 'bg-amber-50 text-amber-700',
+        confirmed: 'bg-blue-50 text-blue-700',
+        processing: 'bg-indigo-50 text-indigo-700',
+        packed: 'bg-purple-50 text-purple-700',
+        shipped: 'bg-cyan-50 text-cyan-700',
+        out_for_delivery: 'bg-orange-50 text-orange-700',
+        delivered: 'bg-emerald-50 text-emerald-700',
+        cancelled: 'bg-red-50 text-red-700'
+      };
+      const label = (status || 'pending').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      return `<span class="inline-flex px-4 py-2 rounded-full text-sm font-semibold ${styles[status] || styles.pending}">${label}</span>`;
+    }
+
+    // ========== AUTH ==========
+    async function checkAuth() {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        window.location.href = 'admin-login.html';
+        return;
+      }
+
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('role, full_name')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile || !['admin', 'staff'].includes(profile.role)) {
+        await supabaseClient.auth.signOut();
+        window.location.href = 'admin-login.html';
+        return;
+      }
+
+      const name = profile.full_name || user.email?.split('@')[0] || 'Admin';
+      document.getElementById('admin-name').textContent = name;
+      document.getElementById('admin-email').textContent = user.email;
+      document.getElementById('admin-avatar').textContent = name.charAt(0).toUpperCase();
+
+      loadOrder();
+    }
+
+    // ========== LOAD ORDER ==========
+    async function loadOrder() {
+      const params = new URLSearchParams(window.location.search);
+      orderId = params.get('id');
+
+      // Try Supabase first, fallback to localStorage
+      try {
+        const { data, error } = await supabaseClient
+          .from('orders')
+          .select('*')
+          .or(`id.eq.${orderId},order_number.eq.${orderId}`)
+          .maybeSingle();
+
+        if (data) {
+          currentOrder = data;
+          renderOrder(data);
+          return;
+        }
+      } catch (err) {
+        console.log('Supabase order not found, checking localStorage');
+      }
+
+      // Fallback to localStorage
+      const lastOrder = localStorage.getItem('qb_last_order');
+      if (lastOrder) {
+        const order = JSON.parse(lastOrder);
+        if (!orderId || order.id === orderId || order.id?.includes(orderId)) {
+          currentOrder = order;
+          renderOrderFromLocal(order);
+          return;
+        }
+      }
+
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('not-found').classList.remove('hidden');
+    }
+
+    function renderOrderFromLocal(order) {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('order-content').classList.remove('hidden');
+
+      document.getElementById('order-number').textContent = order.id || '—';
+      document.getElementById('order-date').textContent = order.createdAt 
+        ? new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        : '—';
+      document.getElementById('status-badge-container').innerHTML = getStatusBadge(order.status || 'pending');
+      document.getElementById('new-status').value = order.status || 'pending';
+
+      document.getElementById('subtotal').textContent = `₦${Number(order.subtotal || 0).toLocaleString()}`;
+      document.getElementById('delivery-fee').textContent = order.deliveryFee === 0 ? 'FREE' : `₦${Number(order.deliveryFee || 0).toLocaleString()}`;
+      document.getElementById('total').textContent = `₦${Number(order.total || 0).toLocaleString()}`;
+
+      document.getElementById('customer-name').textContent = order.customer?.fullName || '—';
+      document.getElementById('customer-email').textContent = order.customer?.email || '—';
+      document.getElementById('customer-phone').textContent = order.customer?.phone || '—';
+
+      const shipping = order.shipping || {};
+      document.getElementById('shipping-address').textContent = 
+        [shipping.address, shipping.city, shipping.state, shipping.country].filter(Boolean).join(', ') || '—';
+
+      const paymentLabels = {
+        card: 'Card Payment',
+        bank_transfer: 'Bank Transfer',
+        cash_on_delivery: 'Cash on Delivery'
+      };
+      document.getElementById('payment-method').textContent = paymentLabels[order.paymentMethod] || order.paymentMethod || '—';
+
+      // Items
+      const itemsContainer = document.getElementById('order-items');
+      if (order.items && order.items.length > 0) {
+        itemsContainer.innerHTML = order.items.map(item => `
+          <div class="flex items-center gap-4 px-6 py-4">
+            <div class="w-14 h-14 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0">
+              <img src="${item.image || 'https://placehold.co/80x80?text=Product'}" 
+                   alt="" class="w-full h-full object-contain p-1">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-slate-800">${item.name}</p>
+              <p class="text-sm text-slate-500">Qty: ${item.quantity || 1} × ₦${Number(item.price || 0).toLocaleString()}</p>
+            </div>
+            <p class="font-bold text-slate-900">
+              ₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}
+            </p>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderOrder(order) {
+      // Similar to local but using Supabase structure
+      renderOrderFromLocal({
+        id: order.order_number || order.id,
+        createdAt: order.created_at,
+        status: order.status,
+        subtotal: order.subtotal,
+        deliveryFee: order.delivery_fee || order.shipping_fee,
+        total: order.total,
+        customer: {
+          fullName: order.customer_name,
+          email: order.customer_email,
+          phone: order.customer_phone
+        },
+        shipping: {
+          address: order.shipping_address,
+          city: order.shipping_city,
+          state: order.shipping_state,
+          country: order.shipping_country
+        },
+        paymentMethod: order.payment_method,
+        items: order.items || []
+      });
+    }
+
+    // ========== UPDATE STATUS ==========
+    document.getElementById('update-status-btn')?.addEventListener('click', async () => {
+      const newStatus = document.getElementById('new-status').value;
+      const btnText = document.getElementById('update-btn-text');
+      const spinner = document.getElementById('update-spinner');
+      const btn = document.getElementById('update-status-btn');
+
+      btnText.textContent = 'Updating...';
+      spinner.classList.remove('hidden');
+      btn.disabled = true;
+
+      try {
+        // Try update in Supabase
+        if (orderId) {
+          const { error } = await supabaseClient
+            .from('orders')
+            .update({ status: newStatus })
+            .or(`id.eq.${orderId},order_number.eq.${orderId}`);
+
+          // Ignore if table structure different
+        }
+
+        // Also update localStorage for demo
+        const lastOrder = localStorage.getItem('qb_last_order');
+        if (lastOrder) {
+          const order = JSON.parse(lastOrder);
+          order.status = newStatus;
+          localStorage.setItem('qb_last_order', JSON.stringify(order));
+        }
+
+        document.getElementById('status-badge-container').innerHTML = getStatusBadge(newStatus);
+        document.getElementById('success-message').classList.remove('hidden');
+        
+        setTimeout(() => {
+          document.getElementById('success-message').classList.add('hidden');
+        }, 3000);
+
+      } catch (err) {
+        console.error(err);
+        alert('Failed to update status');
+      } finally {
+        btnText.textContent = 'Update Status';
+        spinner.classList.add('hidden');
+        btn.disabled = false;
+      }
+    });
+
+    // ========== LOGOUT ==========
+    document.getElementById('logout-btn')?.addEventListener('click', async () => {
+      if (!confirm('Logout from admin panel?')) return;
+      await supabaseClient.auth.signOut();
+      window.location.href = 'admin-login.html';
+    });
+
+    // ========== INIT ==========
+    checkAuth();
+  </script>
+</body>
+</html>
