@@ -166,7 +166,7 @@
 
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Category</label>
-                <input id="category_id" type="text" placeholder="e.g. Phones, Fashion, Electronics"
+                <input id="category_name" type="text" placeholder="e.g. Phones, Fashion, Electronics"
                        class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
               </div>
 
@@ -325,6 +325,38 @@
         .replace(/(^-|-$)/g, '');
     }
 
+    // ========== GET OR CREATE CATEGORY ID ==========
+    async function getCategoryId(categoryName) {
+      if (!categoryName) return null;
+
+      // 1. Search existing category
+      const { data: existing } = await supabaseClient
+        .from('categories')
+        .select('id')
+        .ilike('name', categoryName)
+        .maybeSingle();
+
+      if (existing) return existing.id;
+
+      // 2. Create category if not found
+      const { data: created, error } = await supabaseClient
+        .from('categories')
+        .insert([{
+          name: categoryName,
+          slug: generateSlug(categoryName),
+          is_active: true
+        }])
+        .select('id')
+        .single();
+
+      if (error) {
+        console.error('Error creating category:', error);
+        return null;
+      }
+
+      return created.id;
+    }
+
     // ========== CREATE PRODUCT ==========
     document.getElementById('product-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -332,7 +364,7 @@
       const name = document.getElementById('name').value.trim();
       const sku = document.getElementById('sku').value.trim();
       const brand = document.getElementById('brand').value.trim();
-      const category = document.getElementById('category_id').value.trim();
+      const categoryInput = document.getElementById('category_name').value.trim();
       const description = document.getElementById('description').value.trim();
       const price = parseFloat(document.getElementById('price').value) || 0;
       const compare_at_price = parseFloat(document.getElementById('compare_at_price').value) || null;
@@ -356,12 +388,15 @@
       submitBtn.disabled = true;
 
       try {
+        // Resolve Category ID automatically
+        const category_id = await getCategoryId(categoryInput);
+
         // 1. Insert product
         const { data: product, error: productError } = await supabaseClient
           .from('products')
           .insert([{
             store_id: STORE_ID,
-            category: category || null,
+            category_id,
             name,
             slug: generateSlug(name),
             sku,
