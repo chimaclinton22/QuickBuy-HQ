@@ -166,9 +166,8 @@
 
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Category</label>
-                <select id="category_id" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 bg-white">
-                  <option value="">Select Category</option>
-                </select>
+                <input id="category_id" type="text" placeholder="e.g. Phones, Fashion, Electronics"
+                       class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
               </div>
 
               <div>
@@ -316,31 +315,6 @@
       document.getElementById('admin-name').textContent = name;
       document.getElementById('admin-email').textContent = user.email;
       document.getElementById('admin-avatar').textContent = name.charAt(0).toUpperCase();
-
-      loadCategories();
-    }
-
-    // ========== LOAD CATEGORIES ==========
-    async function loadCategories() {
-      try {
-        const { data } = await supabaseClient
-          .from('categories')
-          .select('id, name')
-          .eq('is_active', true)
-          .order('sort_order');
-
-        const select = document.getElementById('category_id');
-        if (data) {
-          data.forEach(cat => {
-            const opt = document.createElement('option');
-            opt.value = cat.id;
-            opt.textContent = cat.name;
-            select.appendChild(opt);
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
     }
 
     // ========== SLUG GENERATOR ==========
@@ -358,7 +332,7 @@
       const name = document.getElementById('name').value.trim();
       const sku = document.getElementById('sku').value.trim();
       const brand = document.getElementById('brand').value.trim();
-      const category_id = document.getElementById('category_id').value || null;
+      const category = document.getElementById('category_id').value.trim();
       const description = document.getElementById('description').value.trim();
       const price = parseFloat(document.getElementById('price').value) || 0;
       const compare_at_price = parseFloat(document.getElementById('compare_at_price').value) || null;
@@ -387,7 +361,7 @@
           .from('products')
           .insert([{
             store_id: STORE_ID,
-            category_id,
+            category: category || null,
             name,
             slug: generateSlug(name),
             sku,
@@ -458,3 +432,4 @@
   </script>
 </body>
 </html>
+
