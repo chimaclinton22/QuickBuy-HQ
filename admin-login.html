@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login – QuickBuy HQ</title>
+  <meta name="description" content="Sign in to QuickBuy HQ Admin Command Center." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-900 text-white antialiased min-h-screen flex">
+
+  <!-- Left Side (Brand Panel) -->
+  <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-brand-navy relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-20 w-72 h-72 bg-brand-blue rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-20 w-96 h-96 bg-brand-orange rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 flex flex-col justify-between p-12 w-full">
+      <div>
+        <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+             alt="QuickBuy HQ" class="h-12 object-contain brightness-0 invert">
+      </div>
+
+      <div>
+        <h1 class="text-4xl font-black leading-tight mb-4">
+          Admin<br>Command Center
+        </h1>
+        <p class="text-slate-400 text-lg max-w-md">
+          Manage products, orders, inventory, customers and grow your store from one powerful dashboard.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-6 text-sm text-slate-500">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+          <span>Secure Access</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bolt text-orange-400"></i>
+          <span>Real-time Control</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side (Login Form) -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+    <div class="w-full max-w-md">
+
+      <!-- Mobile Logo -->
+      <div class="lg:hidden text-center mb-10">
+        <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+             alt="QuickBuy HQ" class="h-12 mx-auto object-contain brightness-0 invert mb-4">
+        <p class="text-slate-400 text-sm">Admin Command Center</p>
+      </div>
+
+      <div class="mb-8">
+        <h2 class="text-2xl font-black text-white mb-2">Welcome back</h2>
+        <p class="text-slate-400 text-sm">Sign in to manage your store</p>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error-message" class="hidden mb-5 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl px-4 py-3">
+        <i class="fa-solid fa-circle-exclamation mr-2"></i>
+        <span id="error-text">Invalid credentials</span>
+      </div>
+
+      <!-- Success Message -->
+      <div id="success-message" class="hidden mb-5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm rounded-xl px-4 py-3">
+        <i class="fa-solid fa-circle-check mr-2"></i>
+        <span>Signed in successfully! Redirecting...</span>
+      </div>
+
+      <!-- Form -->
+      <form id="admin-login-form" class="space-y-5">
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-300 mb-1.5">Email Address</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+              <i class="fa-regular fa-envelope"></i>
+            </span>
+            <input id="email" type="email" required placeholder="admin@quickbuyhq.com"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue transition">
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input id="password" type="password" required placeholder="••••••••"
+                   class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-11 pr-12 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue transition">
+            <button type="button" id="toggle-password" 
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember -->
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-brand-blue focus:ring-brand-blue">
+            <span class="text-sm text-slate-400">Remember me</span>
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" id="submit-btn"
+                class="w-full bg-brand-blue hover:bg-brand-dark text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-blue/20">
+          <span id="btn-text">Sign In to Dashboard</span>
+          <i id="btn-spinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+        </button>
+      </form>
+
+      <!-- Footer -->
+      <p class="text-center text-sm text-slate-500 mt-10">
+        <a href="index.html" class="hover:text-white transition flex items-center justify-center gap-1">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          Back to Storefront
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========== TOGGLE PASSWORD ==========
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      const icon = document.querySelector('#toggle-password i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+
+    // ========== ADMIN LOGIN ==========
+    document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorBox = document.getElementById('error-message');
+      const successBox = document.getElementById('success-message');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+      const submitBtn = document.getElementById('submit-btn');
+
+      errorBox.classList.add('hidden');
+      successBox.classList.add('hidden');
+
+      btnText.textContent = 'Signing in...';
+      btnSpinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        // Check if user has admin/staff role
+        const { data: profile, error: profileError } = await supabaseClient
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profileError) throw profileError;
+
+        if (!profile || !['admin', 'staff'].includes(profile.role)) {
+          await supabaseClient.auth.signOut();
+          throw new Error('Access denied. Admin privileges required.');
+        }
+
+        // Success
+        successBox.classList.remove('hidden');
+
+        setTimeout(() => {
+          window.location.href = 'admin-dashboard.html';
+        }, 1000);
+
+      } catch (err) {
+        errorBox.classList.remove('hidden');
+        document.getElementById('error-text').textContent = err.message || 'Invalid email or password';
+        
+        btnText.textContent = 'Sign In to Dashboard';
+        btnSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
