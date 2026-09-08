@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Details – QuickBuy HQ</title>
+  <meta name="description" content="View full details of your order at QuickBuy HQ." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Announcement Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2.5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-y-1">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-orange-400"></i>
+        <span>Free Shipping on Orders Over ₦50,000</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>Trusted by 100,000+ Happy Customers</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-headset text-orange-400"></i>
+        <span>24/7 Customer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex-shrink-0">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+
+        <div class="flex items-center gap-5 text-slate-700">
+          <a href="cart.html" class="flex flex-col items-center hover:text-brand-blue transition relative">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span class="text-[11px] mt-0.5 hidden sm:block">Cart</span>
+          </a>
+          <a href="account.html" class="flex flex-col items-center hover:text-brand-blue transition">
+            <i class="fa-regular fa-user text-xl"></i>
+            <span class="text-[11px] mt-0.5">Account</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <nav class="text-sm text-slate-500">
+        <a href="index.html" class="hover:text-brand-blue">Home</a>
+        <span class="mx-2">/</span>
+        <a href="account.html" class="hover:text-brand-blue">Account</a>
+        <span class="mx-2">/</span>
+        <a href="orders.html" class="hover:text-brand-blue">Orders</a>
+        <span class="mx-2">/</span>
+        <span class="text-slate-800 font-medium">Order Details</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+
+    <!-- Loading -->
+    <div id="loading-state" class="py-24 text-center text-slate-400">
+      <i class="fa-solid fa-spinner fa-spin text-3xl mb-4"></i>
+      <p>Loading order details...</p>
+    </div>
+
+    <!-- Not Found -->
+    <div id="not-found" class="hidden py-24 text-center">
+      <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
+        <i class="fa-solid fa-box-open text-3xl text-red-400"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Order Not Found</h3>
+      <p class="text-slate-500 mb-6">We couldn’t find this order.</p>
+      <a href="orders.html" class="inline-block bg-brand-blue hover:bg-brand-dark text-white font-semibold px-6 py-3 rounded-xl transition">
+        Back to My Orders
+      </a>
+    </div>
+
+    <!-- Order Content -->
+    <div id="order-content" class="hidden space-y-6">
+
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-black text-slate-900 mb-1">
+            Order <span id="order-number">#QHQ-000000</span>
+          </h1>
+          <p class="text-sm text-slate-500">
+            Placed on <span id="order-date">—</span>
+          </p>
+        </div>
+        <div id="status-badge" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-50 text-brand-blue">
+          Processing
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-6">
+
+        <!-- Left Column -->
+        <div class="lg:col-span-2 space-y-6">
+
+          <!-- Items -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-100">
+              <h2 class="font-bold text-slate-900">Order Items</h2>
+            </div>
+            <div id="order-items" class="divide-y divide-slate-100">
+              <!-- Dynamic items -->
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h2 class="font-bold text-slate-900 mb-6">Order Timeline</h2>
+            <div id="timeline" class="space-y-6">
+              <!-- Dynamic timeline -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-6">
+
+          <!-- Summary -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h2 class="font-bold text-slate-900 mb-5">Order Summary</h2>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between">
+                <span class="text-slate-500">Subtotal</span>
+                <span id="subtotal" class="font-semibold">₦0</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Delivery Fee</span>
+                <span id="delivery-fee" class="font-semibold">₦0</span>
+              </div>
+              <div class="flex justify-between pt-3 border-t border-slate-100 text-base font-bold">
+                <span>Total</span>
+                <span id="total" class="text-lg">₦0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer & Shipping -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h2 class="font-bold text-slate-900 mb-5">Delivery Details</h2>
+            <div class="space-y-4 text-sm">
+              <div>
+                <p class="text-slate-500 mb-1">Customer</p>
+                <p id="customer-name" class="font-semibold text-slate-800">—</p>
+              </div>
+              <div>
+                <p class="text-slate-500 mb-1">Phone</p>
+                <p id="customer-phone" class="font-semibold text-slate-800">—</p>
+              </div>
+              <div>
+                <p class="text-slate-500 mb-1">Email</p>
+                <p id="customer-email" class="font-semibold text-slate-800">—</p>
+              </div>
+              <div>
+                <p class="text-slate-500 mb-1">Address</p>
+                <p id="delivery-address" class="font-semibold text-slate-800">—</p>
+              </div>
+              <div>
+                <p class="text-slate-500 mb-1">Payment Method</p>
+                <p id="payment-method" class="font-semibold text-slate-800 capitalize">—</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="space-y-3">
+            <a id="track-btn" href="track-order.html" 
+               class="w-full bg-brand-blue hover:bg-brand-dark text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-location-dot"></i>
+              Track Order
+            </a>
+            <a href="orders.html" 
+               class="w-full bg-white border border-slate-200 hover:border-brand-blue text-slate-700 font-semibold py-3.5 rounded-xl transition flex items-center justify-center gap-2">
+              Back to My Orders
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-center text-xs">
+      <p>© 2026 QuickBuy HQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const STATUS_FLOW = [
+      { key: 'pending', label: 'Order Placed', icon: 'fa-receipt' },
+      { key: 'confirmed', label: 'Payment Confirmed', icon: 'fa-credit-card' },
+      { key: 'processing', label: 'Processing', icon: 'fa-box' },
+      { key: 'packed', label: 'Packed', icon: 'fa-box-open' },
+      { key: 'shipped', label: 'Shipped', icon: 'fa-truck' },
+      { key: 'out_for_delivery', label: 'Out for Delivery', icon: 'fa-truck-fast' },
+      { key: 'delivered', label: 'Delivered', icon: 'fa-circle-check' }
+    ];
+
+    function getStatusBadge(status) {
+      const styles = {
+        pending: 'bg-amber-50 text-amber-700',
+        confirmed: 'bg-blue-50 text-blue-700',
+        processing: 'bg-indigo-50 text-indigo-700',
+        packed: 'bg-purple-50 text-purple-700',
+        shipped: 'bg-cyan-50 text-cyan-700',
+        out_for_delivery: 'bg-orange-50 text-orange-700',
+        delivered: 'bg-emerald-50 text-emerald-700',
+        cancelled: 'bg-red-50 text-red-700'
+      };
+      const label = (status || 'pending').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      return `<span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${styles[status] || styles.pending}">${label}</span>`;
+    }
+
+    // ========== LOAD ORDER ==========
+    function loadOrder() {
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('order');
+
+      const lastOrder = localStorage.getItem('qb_last_order');
+      
+      document.getElementById('loading-state').classList.add('hidden');
+
+      if (!lastOrder) {
+        document.getElementById('not-found').classList.remove('hidden');
+        return;
+      }
+
+      const order = JSON.parse(lastOrder);
+
+      // For demo: show even if ID doesn't perfectly match
+      renderOrder(order);
+    }
+
+    function renderOrder(order) {
+      document.getElementById('order-content').classList.remove('hidden');
+
+      // Header
+      document.getElementById('order-number').textContent = order.id || 'QHQ-000000';
+      document.getElementById('order-date').textContent = order.createdAt 
+        ? new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        : '—';
+      document.getElementById('status-badge').outerHTML = getStatusBadge(order.status || 'pending');
+
+      // Summary
+      document.getElementById('subtotal').textContent = `₦${Number(order.subtotal || 0).toLocaleString()}`;
+      document.getElementById('delivery-fee').textContent = order.deliveryFee === 0 ? 'FREE' : `₦${Number(order.deliveryFee || 0).toLocaleString()}`;
+      document.getElementById('total').textContent = `₦${Number(order.total || 0).toLocaleString()}`;
+
+      // Customer & Shipping
+      document.getElementById('customer-name').textContent = order.customer?.fullName || '—';
+      document.getElementById('customer-phone').textContent = order.customer?.phone || '—';
+      document.getElementById('customer-email').textContent = order.customer?.email || '—';
+      
+      const shipping = order.shipping || {};
+      document.getElementById('delivery-address').textContent = 
+        [shipping.address, shipping.city, shipping.state, shipping.country].filter(Boolean).join(', ') || '—';
+
+      const paymentLabels = {
+        card: 'Card Payment',
+        bank_transfer: 'Bank Transfer',
+        cash_on_delivery: 'Cash on Delivery'
+      };
+      document.getElementById('payment-method').textContent = paymentLabels[order.paymentMethod] || order.paymentMethod || '—';
+
+      // Track button
+      document.getElementById('track-btn').href = `track-order.html?order=${order.id}`;
+
+      // Items
+      const itemsContainer = document.getElementById('order-items');
+      if (order.items && order.items.length > 0) {
+        itemsContainer.innerHTML = order.items.map(item => `
+          <div class="flex items-center gap-4 px-6 py-4">
+            <div class="w-16 h-16 bg-slate-50 rounded-xl overflow-hidden flex-shrink-0">
+              <img src="${item.image || 'https://placehold.co/80x80?text=Product'}" 
+                   alt="${item.name}" class="w-full h-full object-contain p-1">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-slate-800 line-clamp-1">${item.name}</p>
+              <p class="text-sm text-slate-500">Qty: ${item.quantity || 1} × ₦${Number(item.price || 0).toLocaleString()}</p>
+            </div>
+            <p class="font-bold text-slate-900">
+              ₦${((item.price || 0) * (item.quantity || 1)).toLocaleString()}
+            </p>
+          </div>
+        `).join('');
+      }
+
+      // Timeline
+      const currentStatus = order.status || 'pending';
+      const currentIndex = STATUS_FLOW.findIndex(s => s.key === currentStatus);
+      const timeline = document.getElementById('timeline');
+
+      timeline.innerHTML = STATUS_FLOW.map((step, index) => {
+        const isCompleted = index <= currentIndex;
+        const isCurrent = index === currentIndex;
+
+        return `
+          <div class="flex gap-4 relative">
+            ${index < STATUS_FLOW.length - 1 ? `
+              <div class="absolute left-5 top-10 w-0.5 h-full ${isCompleted ? 'bg-brand-blue' : 'bg-slate-200'}"></div>
+            ` : ''}
+            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 z-10
+                        ${isCompleted ? 'bg-brand-blue text-white' : 'bg-slate-100 text-slate-400'}
+                        ${isCurrent ? 'ring-4 ring-brand-blue/20' : ''}">
+              <i class="fa-solid ${step.icon} text-sm"></i>
+            </div>
+            <div class="pt-2">
+              <p class="font-semibold text-sm ${isCompleted ? 'text-slate-900' : 'text-slate-400'}">${step.label}</p>
+              ${isCurrent ? '<p class="text-xs text-brand-blue mt-0.5">Current Status</p>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ========== INIT ==========
+    loadOrder();
+  </script>
+</body>
+</html>
