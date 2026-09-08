@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout – QuickBuy HQ</title>
+  <meta name="description" content="Complete your order securely at QuickBuy HQ." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#087EBC',
+              dark: '#075985',
+              navy: '#0B1F33',
+              orange: '#F97316',
+              orangeDark: '#EA580C'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .step-active { color: #087EBC; border-color: #087EBC; }
+    .payment-option input:checked + label {
+      border-color: #087EBC;
+      background-color: #eff6ff;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- Announcement Bar -->
+  <div class="bg-slate-900 text-slate-300 text-xs py-2.5">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-y-1">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-truck-fast text-orange-400"></i>
+        <span>Free Shipping on Orders Over ₦50,000</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>Trusted by 100,000+ Happy Customers</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-headset text-orange-400"></i>
+        <span>24/7 Customer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header (simplified for checkout) -->
+  <header class="bg-white border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html">
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" 
+               alt="QuickBuy HQ" class="h-10 md:h-12 w-auto object-contain">
+        </a>
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+          <i class="fa-solid fa-lock text-emerald-500"></i>
+          <span>Secure Checkout</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Progress Steps -->
+  <div class="bg-white border-b border-slate-100">
+    <div class="max-w-4xl mx-auto px-4 py-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 step-active">
+          <div class="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center text-sm font-bold">1</div>
+          <span class="text-sm font-semibold hidden sm:block">Information</span>
+        </div>
+        <div class="flex-1 h-px bg-slate-200 mx-3"></div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <div class="w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center text-sm font-bold">2</div>
+          <span class="text-sm font-medium hidden sm:block">Delivery</span>
+        </div>
+        <div class="flex-1 h-px bg-slate-200 mx-3"></div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <div class="w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center text-sm font-bold">3</div>
+          <span class="text-sm font-medium hidden sm:block">Payment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+
+    <!-- Empty Cart Redirect -->
+    <div id="empty-state" class="hidden py-24 text-center">
+      <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-5">
+        <i class="fa-solid fa-cart-shopping text-3xl text-slate-300"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-800 mb-2">Your cart is empty</h2>
+      <p class="text-slate-500 mb-6">Add some products before checking out.</p>
+      <a href="shop.html" class="inline-block bg-brand-blue hover:bg-brand-dark text-white font-semibold px-6 py-3 rounded-xl transition">
+        Continue Shopping
+      </a>
+    </div>
+
+    <div id="checkout-content" class="hidden grid lg:grid-cols-5 gap-10">
+
+      <!-- Left: Forms -->
+      <div class="lg:col-span-3 space-y-8">
+
+        <!-- Contact Information -->
+        <section class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8">
+          <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-brand-blue text-white text-sm flex items-center justify-center font-bold">1</span>
+            Contact Information
+          </h2>
+
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">Full Name *</label>
+              <input id="full-name" type="text" required placeholder="John Doe"
+                     class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">Email Address *</label>
+              <input id="email" type="email" required placeholder="john@example.com"
+                     class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">Phone Number *</label>
+              <input id="phone" type="tel" required placeholder="08012345678"
+                     class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
+            </div>
+          </div>
+        </section>
+
+        <!-- Delivery Address -->
+        <section class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8">
+          <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-brand-blue text-white text-sm flex items-center justify-center font-bold">2</span>
+            Delivery Address
+          </h2>
+
+          <div class="space-y-5">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">Street Address *</label>
+              <input id="address" type="text" required placeholder="12 Admiralty Way, Lekki"
+                     class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
+            </div>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">City *</label>
+                <input id="city" type="text" required placeholder="Lagos"
+                       class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">State *</label>
+                <select id="state" required
+                        class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue bg-white">
+                  <option value="">Select State</option>
+                  <option value="Lagos">Lagos</option>
+                  <option value="Abuja">Abuja</option>
+                  <option value="Rivers">Rivers</option>
+                  <option value="Kano">Kano</option>
+                  <option value="Oyo">Oyo</option>
+                  <option value="Ogun">Ogun</option>
+                  <option value="Delta">Delta</option>
+                  <option value="Enugu">Enugu</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1.5">Country</label>
+              <input id="country" type="text" value="Nigeria" readonly
+                     class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 text-slate-600">
+            </div>
+          </div>
+        </section>
+
+        <!-- Delivery Method -->
+        <section class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8">
+          <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-brand-blue text-white text-sm flex items-center justify-center font-bold">3</span>
+            Delivery Method
+          </h2>
+
+          <div class="space-y-3">
+            <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-brand-blue transition">
+              <input type="radio" name="delivery" value="standard" checked class="w-4 h-4 text-brand-blue">
+              <div class="flex-1">
+                <p class="font-semibold text-slate-900">Standard Delivery</p>
+                <p class="text-sm text-slate-500">3–5 business days • ₦3,000</p>
+              </div>
+            </label>
+            <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-brand-blue transition">
+              <input type="radio" name="delivery" value="express" class="w-4 h-4 text-brand-blue">
+              <div class="flex-1">
+                <p class="font-semibold text-slate-900">Express Delivery</p>
+                <p class="text-sm text-slate-500">1–2 business days • ₦6,500</p>
+              </div>
+            </label>
+          </div>
+        </section>
+
+        <!-- Payment Method -->
+        <section class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8">
+          <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-brand-blue text-white text-sm flex items-center justify-center font-bold">4</span>
+            Payment Method
+          </h2>
+
+          <div class="space-y-3">
+            <div class="payment-option">
+              <input type="radio" name="payment" id="pay-card" value="card" class="hidden" checked>
+              <label for="pay-card" class="flex items-center gap-4 p-4 border-2 border-slate-200 rounded-xl cursor-pointer transition">
+                <i class="fa-solid fa-credit-card text-xl text-brand-blue"></i>
+                <div>
+                  <p class="font-semibold text-slate-900">Card Payment</p>
+                  <p class="text-sm text-slate-500">Pay securely with Visa, Mastercard or Verve</p>
+                </div>
+              </label>
+            </div>
+
+            <div class="payment-option">
+              <input type="radio" name="payment" id="pay-transfer" value="bank_transfer" class="hidden">
+              <label for="pay-transfer" class="flex items-center gap-4 p-4 border-2 border-slate-200 rounded-xl cursor-pointer transition">
+                <i class="fa-solid fa-building-columns text-xl text-brand-blue"></i>
+                <div>
+                  <p class="font-semibold text-slate-900">Bank Transfer</p>
+                  <p class="text-sm text-slate-500">Transfer to our account and upload proof</p>
+                </div>
+              </label>
+            </div>
+
+            <div class="payment-option">
+              <input type="radio" name="payment" id="pay-cod" value="cash_on_delivery" class="hidden">
+              <label for="pay-cod" class="flex items-center gap-4 p-4 border-2 border-slate-200 rounded-xl cursor-pointer transition">
+                <i class="fa-solid fa-money-bill-wave text-xl text-brand-blue"></i>
+                <div>
+                  <p class="font-semibold text-slate-900">Cash on Delivery</p>
+                  <p class="text-sm text-slate-500">Pay when your order arrives</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right: Order Summary -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sticky top-8">
+          <h2 class="text-lg font-bold text-slate-900 mb-6">Order Summary</h2>
+
+          <!-- Items -->
+          <div id="summary-items" class="space-y-4 mb-6 max-h-64 overflow-y-auto">
+            <!-- Dynamic items -->
+          </div>
+
+          <div class="border-t border-slate-100 pt-5 space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-600">Subtotal</span>
+              <span id="summary-subtotal" class="font-semibold">₦0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-600">Delivery</span>
+              <span id="summary-delivery" class="font-semibold">₦3,000</span>
+            </div>
+            <div class="flex justify-between text-base font-bold pt-3 border-t border-slate-100">
+              <span>Total</span>
+              <span id="summary-total" class="text-xl">₦0</span>
+            </div>
+          </div>
+
+          <button id="place-order-btn"
+                  class="w-full mt-6 bg-brand-blue hover:bg-brand-dark text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-blue/20">
+            <i class="fa-solid fa-lock"></i>
+            Place Order
+          </button>
+
+          <p class="text-xs text-slate-400 text-center mt-4">
+            By placing your order, you agree to our Terms & Privacy Policy.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-center text-xs">
+      <p>© 2026 QuickBuy HQ. All rights reserved. • Secure Checkout</p>
+    </div>
+  </footer>
+
+  <script>
+    // ========== STATE ==========
+    let cart = JSON.parse(localStorage.getItem('qb_cart') || '[]');
+    const DELIVERY_STANDARD = 3000;
+    const DELIVERY_EXPRESS = 6500;
+    const FREE_SHIPPING_THRESHOLD = 50000;
+
+    // ========== INIT ==========
+    function init() {
+      if (!cart || cart.length === 0) {
+        document.getElementById('empty-state').classList.remove('hidden');
+        document.getElementById('checkout-content').classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('empty-state').classList.add('hidden');
+      document.getElementById('checkout-content').classList.remove('hidden');
+      renderSummary();
+    }
+
+    function renderSummary() {
+      const container = document.getElementById('summary-items');
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+
+      container.innerHTML = cart.map(item => `
+        <div class="flex gap-3">
+          <div class="w-14 h-14 bg-slate-50 rounded-lg overflow-hidden flex-shrink-0">
+            <img src="${item.image || 'https://placehold.co/80x80?text=Product'}" 
+                 alt="${item.name}" class="w-full h-full object-contain p-1">
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-slate-800 line-clamp-1">${item.name}</p>
+            <p class="text-xs text-slate-500">Qty: ${item.quantity || 1}</p>
+          </div>
+          <p class="text-sm font-semibold text-slate-900">₦${(item.price * (item.quantity || 1)).toLocaleString()}</p>
+        </div>
+      `).join('');
+
+      updateTotals(subtotal);
+    }
+
+    function updateTotals(subtotal) {
+      const deliveryMethod = document.querySelector('input[name="delivery"]:checked')?.value || 'standard';
+      let delivery = deliveryMethod === 'express' ? DELIVERY_EXPRESS : DELIVERY_STANDARD;
+
+      if (subtotal >= FREE_SHIPPING_THRESHOLD && deliveryMethod === 'standard') {
+        delivery = 0;
+      }
+
+      const total = subtotal + delivery;
+
+      document.getElementById('summary-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
+      document.getElementById('summary-delivery').textContent = delivery === 0 ? 'FREE' : `₦${delivery.toLocaleString()}`;
+      document.getElementById('summary-total').textContent = `₦${total.toLocaleString()}`;
+    }
+
+    // Delivery method change
+    document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+        updateTotals(subtotal);
+      });
+    });
+
+    // ========== PLACE ORDER ==========
+    document.getElementById('place-order-btn').addEventListener('click', async () => {
+      // Validation
+      const fullName = document.getElementById('full-name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const state = document.getElementById('state').value;
+      const country = document.getElementById('country').value;
+      const deliveryMethod = document.querySelector('input[name="delivery"]:checked')?.value;
+      const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+
+      if (!fullName || !email || !phone || !address || !city || !state) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      // Calculate totals
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+      let deliveryFee = deliveryMethod === 'express' ? DELIVERY_EXPRESS : DELIVERY_STANDARD;
+      if (subtotal >= FREE_SHIPPING_THRESHOLD && deliveryMethod === 'standard') deliveryFee = 0;
+      const total = subtotal + deliveryFee;
+
+      // Create order object (for now store in localStorage, later send to Supabase)
+      const order = {
+        id: 'QHQ-' + Date.now().toString().slice(-6),
+        items: cart,
+        customer: { fullName, email, phone },
+        shipping: { address, city, state, country },
+        deliveryMethod,
+        paymentMethod,
+        subtotal,
+        deliveryFee,
+        total,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+
+      // Save order temporarily
+      localStorage.setItem('qb_last_order', JSON.stringify(order));
+
+      // Clear cart
+      localStorage.setItem('qb_cart', '[]');
+
+      // Redirect to success page
+      window.location.href = `order-success.html?order=${order.id}`;
+    });
+
+    // ========== START ==========
+    init();
+  </script>
+</body>
+</html>
