@@ -84,10 +84,37 @@
     .section-header-phones { background: linear-gradient(90deg, #0369a1, #0284c7); }
     .section-header-fashion { background: linear-gradient(90deg, #be185d, #ec4899); }
     .section-header-home { background: linear-gradient(90deg, #15803d, #22c55e); }
-    .section-header-beauty { background: linear-gradient(90deg, #9d174d, #f472b6); }
+
+    /* Image animations */
+    .hero-slide { transition: opacity 0.7s ease; }
+    .hero-slide img { transition: transform 8s ease; }
+    .hero-slide.active img { transform: scale(1.06); }
+
+    .promo-banner { overflow: hidden; }
+    .promo-banner img {
+      transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .promo-banner:hover img { transform: scale(1.04); }
+
+    .campaign-rail-item {
+      width: 280px;
+      height: 140px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    @media (min-width: 640px) {
+      .campaign-rail-item { width: 340px; height: 160px; }
+    }
+
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (prefers-reduced-motion: reduce) {
       .skeleton { animation: none; }
+      .hero-slide img { transition: none; }
+      .promo-banner img { transition: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
       * { transition: none !important; }
     }
   </style>
@@ -107,7 +134,6 @@
   <!-- ========== HEADER ========== -->
   <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-3">
-      <!-- Top row -->
       <div class="flex items-center justify-between h-12 sm:h-14 gap-2">
         <div class="flex items-center gap-2.5">
           <button id="menu-btn" class="md:hidden w-9 h-9 flex items-center justify-center text-slate-700" aria-label="Menu">
@@ -118,7 +144,6 @@
           </a>
         </div>
 
-        <!-- Desktop Search -->
         <div class="hidden md:flex flex-1 max-w-xl mx-4">
           <div class="relative w-full flex">
             <input id="search-input" type="search" placeholder="Search products, brands and categories..."
@@ -144,7 +169,6 @@
         </div>
       </div>
 
-      <!-- Mobile Search -->
       <div class="md:hidden pb-2.5">
         <div class="flex">
           <input id="mobile-search" type="search" placeholder="Search products, brands and categories..."
@@ -198,41 +222,22 @@
     </div>
   </section>
 
-  <!-- ========== HERO (COMPACT) ========== -->
+  <!-- ========== ANIMATED HERO ========== -->
   <section class="relative">
-    <div id="hero" class="relative h-[145px] sm:h-[220px] lg:h-[280px] overflow-hidden">
-      <div class="hero-slide absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-dark to-brand-blue flex items-center transition-opacity duration-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <p class="text-orange-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-0.5">New Season</p>
-          <h1 class="text-base sm:text-2xl lg:text-3xl font-black text-white leading-tight mb-1">Everything You Need.<br><span class="text-orange-400">Delivered Fast.</span></h1>
-          <p class="text-slate-300 text-[11px] sm:text-sm mb-2.5 max-w-xs hidden sm:block">Quality products. Great prices. Fast delivery.</p>
-          <a href="shop.html" class="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-lg text-[11px] sm:text-sm transition">Shop Now <i class="fa-solid fa-arrow-right text-[9px]"></i></a>
-        </div>
-      </div>
-      <div class="hero-slide absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 flex items-center opacity-0 pointer-events-none transition-opacity duration-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <p class="text-white/80 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-0.5">Limited Time</p>
-          <h1 class="text-base sm:text-2xl lg:text-3xl font-black text-white leading-tight mb-1">Flash Deals<br>Up to 40% Off</h1>
-          <a href="#flash-sale" class="inline-flex items-center gap-1.5 bg-white text-orange-600 font-bold px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-lg text-[11px] sm:text-sm transition hover:bg-orange-50">View Deals <i class="fa-solid fa-arrow-right text-[9px]"></i></a>
-        </div>
-      </div>
-      <div class="hero-slide absolute inset-0 bg-gradient-to-r from-slate-800 to-slate-900 flex items-center opacity-0 pointer-events-none transition-opacity duration-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <p class="text-brand-blue text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-0.5">Smart Tech</p>
-          <h1 class="text-base sm:text-2xl lg:text-3xl font-black text-white leading-tight mb-1">Upgrade Your<br>Everyday Life</h1>
-          <a href="shop.html?category=electronics" class="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-dark text-white font-bold px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-lg text-[11px] sm:text-sm transition">Explore Tech <i class="fa-solid fa-arrow-right text-[9px]"></i></a>
-        </div>
-      </div>
+    <div id="hero" class="relative h-[160px] sm:h-[240px] lg:h-[320px] overflow-hidden bg-slate-900">
+      <!-- Slides will be injected by JS using campaign images -->
     </div>
-    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-      <button class="hero-dot w-1.5 h-1.5 rounded-full bg-white" data-i="0"></button>
-      <button class="hero-dot w-1.5 h-1.5 rounded-full bg-white/40" data-i="1"></button>
-      <button class="hero-dot w-1.5 h-1.5 rounded-full bg-white/40" data-i="2"></button>
-    </div>
+    <div class="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10" id="hero-dots"></div>
+    <button id="hero-prev" class="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 backdrop-blur text-white items-center justify-center hover:bg-white/40 transition z-10">
+      <i class="fa-solid fa-chevron-left text-sm"></i>
+    </button>
+    <button id="hero-next" class="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 backdrop-blur text-white items-center justify-center hover:bg-white/40 transition z-10">
+      <i class="fa-solid fa-chevron-right text-sm"></i>
+    </button>
   </section>
 
   <!-- ========== FLASH SALE ========== -->
-  <section id="flash-sale" class="max-w-7xl mx-auto px-3 py-4 sm:py-6">
+  <section id="flash-sale" class="max-w-7xl mx-auto px-3 py-4 sm:py-6 reveal">
     <div class="section-header-flash rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <div class="flex items-center gap-2">
         <span class="text-sm">⚡</span>
@@ -251,8 +256,22 @@
     </div>
   </section>
 
+  <!-- ========== PROMO BANNER 1 ========== -->
+  <section class="max-w-7xl mx-auto px-3 py-2 reveal">
+    <a href="shop.html?category=electronics" class="promo-banner relative block rounded-xl overflow-hidden h-[120px] sm:h-[160px]">
+      <img id="promo-img-1" src="" alt="Campaign" class="w-full h-full object-cover" loading="lazy">
+      <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent flex items-center px-5 sm:px-8">
+        <div class="text-white">
+          <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-orange-400 mb-0.5">Featured</p>
+          <h3 class="text-sm sm:text-xl font-black mb-1">Upgrade Your Setup</h3>
+          <span class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold bg-white/20 backdrop-blur px-2.5 py-1 rounded-lg">Shop Now <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+        </div>
+      </div>
+    </a>
+  </section>
+
   <!-- ========== TOP SELLERS ========== -->
-  <section id="top-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="top-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-top rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Top Sellers</h2>
       <a href="shop.html" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
@@ -265,8 +284,16 @@
     </div>
   </section>
 
+  <!-- ========== CAMPAIGN IMAGE RAIL ========== -->
+  <section class="max-w-7xl mx-auto px-3 py-3 sm:py-4 reveal">
+    <div class="flex items-center justify-between mb-2.5">
+      <h2 class="text-sm sm:text-base font-black text-slate-900">Featured Campaigns</h2>
+    </div>
+    <div id="campaign-rail" class="rail gap-3"></div>
+  </section>
+
   <!-- ========== TRENDING ========== -->
-  <section id="trending-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="trending-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-trend rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Trending Now</h2>
       <a href="shop.html" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
@@ -279,20 +306,22 @@
     </div>
   </section>
 
-  <!-- ========== PROMO 1 ========== -->
-  <section class="max-w-7xl mx-auto px-3 py-2">
-    <div class="bg-gradient-to-r from-brand-blue to-brand-dark rounded-xl p-4 sm:p-6 flex items-center justify-between text-white">
-      <div>
-        <p class="text-blue-200 text-[10px] font-bold uppercase tracking-wider mb-0.5">Special Offer</p>
-        <h3 class="text-sm sm:text-lg font-black mb-0.5">Smart Tech Upgrades</h3>
-        <p class="text-blue-100 text-[11px] sm:text-sm mb-2.5 max-w-[200px]">Upgrade your everyday life.</p>
-        <a href="shop.html?category=electronics" class="inline-flex items-center gap-1.5 bg-white text-brand-blue font-bold px-3 py-1.5 rounded-lg text-[11px] hover:bg-blue-50 transition">Shop Now <i class="fa-solid fa-arrow-right text-[9px]"></i></a>
+  <!-- ========== LARGE PROMO BANNER ========== -->
+  <section class="max-w-7xl mx-auto px-3 py-2 reveal">
+    <a href="shop.html?category=phones" class="promo-banner relative block rounded-xl overflow-hidden h-[140px] sm:h-[190px]">
+      <img id="promo-img-2" src="" alt="Campaign" class="w-full h-full object-cover" loading="lazy">
+      <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent flex items-center px-5 sm:px-8">
+        <div class="text-white">
+          <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-orange-400 mb-0.5">Hot Picks</p>
+          <h3 class="text-sm sm:text-xl font-black mb-1">Phones & Accessories</h3>
+          <span class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold bg-orange-500 px-2.5 py-1 rounded-lg">Explore <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+        </div>
       </div>
-    </div>
+    </a>
   </section>
 
   <!-- ========== ELECTRONICS ========== -->
-  <section id="electronics-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="electronics-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-elec rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Electronics</h2>
       <a href="shop.html?category=electronics" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
@@ -305,8 +334,26 @@
     </div>
   </section>
 
+  <!-- ========== PROMO CARD ========== -->
+  <section class="max-w-7xl mx-auto px-3 py-2 reveal">
+    <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+      <a href="shop.html?category=fashion" class="promo-banner relative block rounded-xl overflow-hidden h-[110px] sm:h-[140px]">
+        <img id="promo-img-3" src="" alt="Fashion" class="w-full h-full object-cover" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-3">
+          <span class="text-white text-xs sm:text-sm font-bold">Fashion Picks</span>
+        </div>
+      </a>
+      <a href="shop.html?category=home-living" class="promo-banner relative block rounded-xl overflow-hidden h-[110px] sm:h-[140px]">
+        <img id="promo-img-4" src="" alt="Home" class="w-full h-full object-cover" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-3">
+          <span class="text-white text-xs sm:text-sm font-bold">Home Essentials</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
   <!-- ========== PHONES ========== -->
-  <section id="phones-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="phones-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-phones rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Phones</h2>
       <a href="shop.html?category=phones" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
@@ -320,7 +367,7 @@
   </section>
 
   <!-- ========== FASHION ========== -->
-  <section id="fashion-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="fashion-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-fashion rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Fashion</h2>
       <a href="shop.html?category=fashion" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
@@ -333,8 +380,13 @@
     </div>
   </section>
 
+  <!-- ========== SECOND CAMPAIGN RAIL ========== -->
+  <section class="max-w-7xl mx-auto px-3 py-3 sm:py-4 reveal">
+    <div id="campaign-rail-2" class="rail gap-3"></div>
+  </section>
+
   <!-- ========== HOME ========== -->
-  <section id="home-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="home-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-home rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Home & Living</h2>
       <a href="shop.html?category=home-living" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
@@ -348,7 +400,7 @@
   </section>
 
   <!-- ========== RECOMMENDED ========== -->
-  <section id="recommended-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5">
+  <section id="recommended-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="bg-slate-800 rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Recommended For You</h2>
       <a href="shop.html" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
@@ -362,7 +414,7 @@
   </section>
 
   <!-- ========== RECENTLY VIEWED ========== -->
-  <section id="recent-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 hidden">
+  <section id="recent-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 hidden reveal">
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-sm sm:text-base font-black text-slate-900">Recently Viewed</h2>
     </div>
@@ -435,7 +487,7 @@
   </footer>
 
   <!-- ========== MOBILE BOTTOM NAV ========== -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex items-center justify-around h-14 safe-area-pb">
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex items-center justify-around h-14">
     <a href="index.html" class="flex flex-col items-center gap-0.5 text-brand-blue">
       <i class="fa-solid fa-house text-lg"></i>
       <span class="text-[9px] font-semibold">Home</span>
@@ -475,7 +527,7 @@
     </div>
   </div>
 
-  <!-- ========== QUICK VIEW MODAL ========== -->
+  <!-- ========== QUICK VIEW ========== -->
   <div id="qv-backdrop" class="modal-backdrop fixed inset-0 bg-black/50 z-[80]"></div>
   <div id="qv-modal" class="fixed inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center z-[90] pointer-events-none">
     <div id="qv-panel" class="modal-panel bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto pointer-events-auto shadow-2xl">
@@ -494,6 +546,40 @@
   </div>
 
   <script>
+    // ========== CAMPAIGN IMAGES (exact Imgur assets) ==========
+    const CAMPAIGN_IMAGES = [
+      "https://i.imgur.com/3A5uPfF_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/InpiG63_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/zOm7NM1_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/vpqhFLp_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/Uq5cM5c_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/139kWVU_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/RcPe3EU_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/4efe22H_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/sVxOClF_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/8691uQW_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/T6R4dGQ_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/7hc1gMV_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/lq3hVzg_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/iqSddFX_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/o6ciclb_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/olfZns2_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/ia5YtGA_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/NtSjUV6_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/V5x97au_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/VNTPs91_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/bnjXcwp_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/Azajpdq_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/MRbJDem_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/J7g3znR_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/29XN5Ci_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/yFH7NPx_d.webp?maxwidth=1520&fidelity=grand",
+      "https://i.imgur.com/rln20Md_d.webp?maxwidth=1520&fidelity=grand",
+      "https://i.imgur.com/xR2k4Xk_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/WLvH8JZ_d.webp?maxwidth=1520&fidelity=grand",
+      "https://i.imgur.com/bhDrDGg_d.webp?maxwidth=760&fidelity=grand"
+    ];
+
     const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
     const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -502,7 +588,106 @@
     let wishlist = JSON.parse(localStorage.getItem('qb_wishlist') || '[]');
     let recentlyViewed = JSON.parse(localStorage.getItem('qb_recent') || '[]');
     let allProducts = [];
+    let heroIdx = 0;
+    let heroTimer = null;
 
+    // ========== INIT CAMPAIGN VISUALS ==========
+    function initCampaignVisuals() {
+      // Hero slides (use high-res + strong images)
+      const heroImages = [CAMPAIGN_IMAGES[25], CAMPAIGN_IMAGES[26], CAMPAIGN_IMAGES[28], CAMPAIGN_IMAGES[0], CAMPAIGN_IMAGES[3]];
+      const heroTitles = [
+        { sub: 'New Season', title: 'Everything You Need.<br><span class="text-orange-400">Delivered Fast.</span>', cta: 'Shop Now', href: 'shop.html' },
+        { sub: 'Limited Time', title: 'Flash Deals<br>Up to 40% Off', cta: 'View Deals', href: '#flash-sale' },
+        { sub: 'Smart Tech', title: 'Upgrade Your<br>Everyday Life', cta: 'Explore Tech', href: 'shop.html?category=electronics' },
+        { sub: 'Hot Picks', title: 'Phones & Gadgets<br>You\'ll Love', cta: 'Shop Phones', href: 'shop.html?category=phones' },
+        { sub: 'Style Edit', title: 'Fresh Fashion<br>Arrivals', cta: 'Shop Fashion', href: 'shop.html?category=fashion' }
+      ];
+
+      const heroEl = document.getElementById('hero');
+      const dotsEl = document.getElementById('hero-dots');
+      heroEl.innerHTML = heroImages.map((src, i) => `
+        <div class="hero-slide absolute inset-0 ${i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}" data-i="${i}">
+          <img src="${src}" alt="Campaign" class="absolute inset-0 w-full h-full object-cover" ${i === 0 ? '' : 'loading="lazy"'}>
+          <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+          <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center">
+            <div class="text-white">
+              <p class="text-orange-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-0.5">${heroTitles[i].sub}</p>
+              <h1 class="text-base sm:text-2xl lg:text-3xl font-black leading-tight mb-1.5">${heroTitles[i].title}</h1>
+              <a href="${heroTitles[i].href}" class="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-lg text-[11px] sm:text-sm transition">${heroTitles[i].cta} <i class="fa-solid fa-arrow-right text-[9px]"></i></a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      dotsEl.innerHTML = heroImages.map((_, i) => `
+        <button class="hero-dot w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/40'}" data-i="${i}"></button>
+      `).join('');
+
+      document.querySelectorAll('.hero-dot').forEach(d => d.addEventListener('click', () => showHero(+d.dataset.i)));
+      document.getElementById('hero-prev')?.addEventListener('click', () => showHero((heroIdx - 1 + heroImages.length) % heroImages.length));
+      document.getElementById('hero-next')?.addEventListener('click', () => showHero((heroIdx + 1) % heroImages.length));
+      startHeroTimer();
+
+      // Promo banners
+      document.getElementById('promo-img-1').src = CAMPAIGN_IMAGES[25];
+      document.getElementById('promo-img-2').src = CAMPAIGN_IMAGES[26];
+      document.getElementById('promo-img-3').src = CAMPAIGN_IMAGES[4];
+      document.getElementById('promo-img-4').src = CAMPAIGN_IMAGES[27];
+
+      // Campaign rails
+      const rail1 = document.getElementById('campaign-rail');
+      const rail2 = document.getElementById('campaign-rail-2');
+      const set1 = CAMPAIGN_IMAGES.slice(5, 13);
+      const set2 = CAMPAIGN_IMAGES.slice(13, 21);
+
+      rail1.innerHTML = set1.map(src => `
+        <a href="shop.html" class="campaign-rail-item relative block">
+          <img src="${src}" alt="Campaign" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.style.display='none'">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        </a>
+      `).join('');
+
+      rail2.innerHTML = set2.map(src => `
+        <a href="shop.html" class="campaign-rail-item relative block">
+          <img src="${src}" alt="Campaign" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.style.display='none'">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        </a>
+      `).join('');
+    }
+
+    function showHero(i) {
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.hero-dot');
+      slides.forEach((s, idx) => {
+        s.classList.toggle('opacity-100', idx === i);
+        s.classList.toggle('opacity-0', idx !== i);
+        s.classList.toggle('pointer-events-none', idx !== i);
+        s.classList.toggle('active', idx === i);
+      });
+      dots.forEach((d, idx) => {
+        d.classList.toggle('bg-white', idx === i);
+        d.classList.toggle('bg-white/40', idx !== i);
+      });
+      heroIdx = i;
+      startHeroTimer();
+    }
+
+    function startHeroTimer() {
+      clearInterval(heroTimer);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const total = document.querySelectorAll('.hero-slide').length;
+      heroTimer = setInterval(() => showHero((heroIdx + 1) % total), 5200);
+    }
+
+    // Scroll reveal
+    function initReveal() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    }
+
+    // ========== COUNTS ==========
     function updateCounts() {
       const cartQty = cart.reduce((s, i) => s + (i.quantity || 1), 0);
       document.getElementById('cart-count').textContent = cartQty;
@@ -551,40 +736,24 @@
             </div>
           </div>
           <div class="px-2 pb-2">
-            <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-full bg-brand-blue hover:bg-brand-dark text-white text-[10px] font-semibold py-1.5 rounded-lg transition">
-              + Add
-            </button>
+            <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-full bg-brand-blue hover:bg-brand-dark text-white text-[10px] font-semibold py-1.5 rounded-lg transition">+ Add</button>
           </div>
         </div>`;
     }
 
     async function loadCategories() {
       try {
-        const { data } = await supabaseClient
-          .from('categories')
-          .select('id, name, slug, image_url')
-          .eq('is_active', true)
-          .order('sort_order');
-
+        const { data } = await supabaseClient.from('categories').select('id, name, slug, image_url').eq('is_active', true).order('sort_order');
         const el = document.getElementById('category-rail');
-        if (!data?.length) {
-          el.innerHTML = '<p class="text-xs text-slate-400 py-2">No categories</p>';
-          return;
-        }
-
+        if (!data?.length) { el.innerHTML = '<p class="text-xs text-slate-400 py-2">No categories</p>'; return; }
         const defaults = {
-          electronics: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=120',
-          phones: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120',
-          fashion: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120',
-          'home-living': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=120',
-          beauty: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120',
-          accessories: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=120'
+          electronics: CAMPAIGN_IMAGES[19], phones: CAMPAIGN_IMAGES[3], fashion: CAMPAIGN_IMAGES[4],
+          'home-living': CAMPAIGN_IMAGES[25], beauty: CAMPAIGN_IMAGES[8], accessories: CAMPAIGN_IMAGES[23]
         };
-
         el.innerHTML = data.map(c => `
           <a href="shop.html?category=${c.slug}" class="cat-item flex flex-col items-center gap-1 group">
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-slate-100 group-hover:border-brand-blue transition shadow-sm bg-slate-50">
-              <img src="${c.image_url || defaults[c.slug] || 'https://placehold.co/80'}" alt="${c.name}" class="w-full h-full object-cover" loading="lazy">
+              <img src="${c.image_url || defaults[c.slug] || CAMPAIGN_IMAGES[0]}" alt="${c.name}" class="w-full h-full object-cover" loading="lazy">
             </div>
             <span class="text-[9px] sm:text-[10px] font-medium text-slate-700 text-center line-clamp-1">${c.name}</span>
           </a>`).join('');
@@ -593,17 +762,10 @@
 
     async function loadProducts() {
       try {
-        const { data, error } = await supabaseClient
-          .from('products')
-          .select(`
-            id, name, slug, price, compare_at_price, discount_percentage,
-            rating, review_count, brand, status, category_id, description,
-            product_images (image_url, is_primary),
-            categories (slug, name)
-          `)
-          .eq('status', 'active')
-          .order('created_at', { ascending: false });
-
+        const { data, error } = await supabaseClient.from('products').select(`
+          id, name, slug, price, compare_at_price, discount_percentage, rating, review_count, brand, status, category_id, description,
+          product_images (image_url, is_primary), categories (slug, name)
+        `).eq('status', 'active').order('created_at', { ascending: false });
         if (error) throw error;
         allProducts = data || [];
 
@@ -621,7 +783,6 @@
         renderRail('fashion-rail', bySlug('fashion'), 'fashion-section');
         renderRail('home-rail', bySlug('home-living'), 'home-section');
         renderRail('recommended-rail', recommended.length ? recommended : allProducts.slice(0, 8), 'recommended-section');
-
         renderRecentlyViewed();
       } catch (e) {
         console.error(e);
@@ -647,18 +808,9 @@
     function renderRecentlyViewed() {
       const section = document.getElementById('recent-section');
       const rail = document.getElementById('recent-rail');
-      if (!recentlyViewed.length || !allProducts.length) {
-        section.classList.add('hidden');
-        return;
-      }
-      const products = recentlyViewed
-        .map(id => allProducts.find(p => p.id === id))
-        .filter(Boolean)
-        .slice(0, 10);
-      if (!products.length) {
-        section.classList.add('hidden');
-        return;
-      }
+      if (!recentlyViewed.length || !allProducts.length) { section.classList.add('hidden'); return; }
+      const products = recentlyViewed.map(id => allProducts.find(p => p.id === id)).filter(Boolean).slice(0, 10);
+      if (!products.length) { section.classList.add('hidden'); return; }
       section.classList.remove('hidden');
       rail.innerHTML = products.map(productCard).join('');
     }
@@ -719,8 +871,7 @@
           </div>
           <button onclick="removeFromCart('${i.id}')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash text-xs"></i></button>
         </div>`).join('');
-      const sub = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-      document.getElementById('cart-subtotal').textContent = '₦' + sub.toLocaleString();
+      document.getElementById('cart-subtotal').textContent = '₦' + cart.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString();
     }
 
     function openCart() {
@@ -736,16 +887,10 @@
     }
 
     function toggleWishlist(id) {
-      if (wishlist.includes(id)) {
-        wishlist = wishlist.filter(i => i !== id);
-        showToast('Removed from wishlist');
-      } else {
-        wishlist.push(id);
-        showToast('Saved to wishlist');
-      }
+      if (wishlist.includes(id)) { wishlist = wishlist.filter(i => i !== id); showToast('Removed from wishlist'); }
+      else { wishlist.push(id); showToast('Saved to wishlist'); }
       localStorage.setItem('qb_wishlist', JSON.stringify(wishlist));
       updateCounts();
-      // Update all visible hearts
       document.querySelectorAll(`[data-id="${id}"]`).forEach(card => {
         const btn = card.querySelector('button');
         const icon = btn?.querySelector('i');
@@ -764,7 +909,6 @@
       const img = p.product_images?.find(i => i.is_primary)?.image_url || p.product_images?.[0]?.image_url || 'https://placehold.co/400';
       const hasDisc = p.compare_at_price && p.compare_at_price > p.price;
       const disc = hasDisc ? Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100) : 0;
-
       document.getElementById('qv-content').innerHTML = `
         <div class="aspect-square bg-slate-50 rounded-xl mb-4 overflow-hidden">
           <img src="${img}" alt="${p.name}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/400'">
@@ -777,45 +921,23 @@
         </div>
         <div class="flex items-baseline gap-2 mb-3">
           <span class="text-xl font-black text-slate-900">₦${Number(p.price).toLocaleString()}</span>
-          ${hasDisc ? `<span class="text-sm text-slate-400 line-through">₦${Number(p.compare_at_price).toLocaleString()}</span>
-          <span class="text-xs font-bold text-red-500">-${disc}%</span>` : ''}
+          ${hasDisc ? `<span class="text-sm text-slate-400 line-through">₦${Number(p.compare_at_price).toLocaleString()}</span><span class="text-xs font-bold text-red-500">-${disc}%</span>` : ''}
         </div>
         <p class="text-sm text-slate-600 mb-4 line-clamp-3">${p.description || 'Quality product from QuickBuy HQ.'}</p>
         <div class="flex gap-2">
           <button onclick="addToCart('${p.id}'); closeQuickView();" class="flex-1 bg-brand-blue hover:bg-brand-dark text-white font-bold py-3 rounded-xl text-sm transition">Add to Cart</button>
           <a href="product.html?id=${p.id}" class="flex-1 border border-slate-200 text-center font-bold py-3 rounded-xl text-sm hover:bg-slate-50 transition">View Product</a>
         </div>`;
-
       document.getElementById('qv-backdrop').classList.add('open');
       document.getElementById('qv-panel').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-
     function closeQuickView() {
       document.getElementById('qv-backdrop').classList.remove('open');
       document.getElementById('qv-panel').classList.remove('open');
       document.body.style.overflow = '';
     }
 
-    // Hero
-    let heroIdx = 0;
-    const slides = document.querySelectorAll('.hero-slide');
-    const dots = document.querySelectorAll('.hero-dot');
-    function showHero(i) {
-      slides.forEach((s, idx) => {
-        s.style.opacity = idx === i ? '1' : '0';
-        s.style.pointerEvents = idx === i ? 'auto' : 'none';
-      });
-      dots.forEach((d, idx) => {
-        d.classList.toggle('bg-white', idx === i);
-        d.classList.toggle('bg-white/40', idx !== i);
-      });
-      heroIdx = i;
-    }
-    dots.forEach(d => d.addEventListener('click', () => showHero(+d.dataset.i)));
-    setInterval(() => showHero((heroIdx + 1) % slides.length), 5000);
-
-    // Countdown
     function startCountdown() {
       const end = Date.now() + 6 * 60 * 60 * 1000;
       setInterval(() => {
@@ -828,36 +950,24 @@
       }, 1000);
     }
 
-    // Search
     function doSearch(q) {
       q = (q || '').trim();
       window.location.href = q ? `shop.html?q=${encodeURIComponent(q)}` : 'shop.html';
     }
+
+    // Events
     document.getElementById('search-btn')?.addEventListener('click', () => doSearch(document.getElementById('search-input').value));
     document.getElementById('mobile-search-btn')?.addEventListener('click', () => doSearch(document.getElementById('mobile-search').value));
     document.getElementById('search-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
     document.getElementById('mobile-search')?.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
-    document.getElementById('bottom-search')?.addEventListener('click', () => {
-      document.getElementById('mobile-search')?.focus();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    document.getElementById('bottom-search')?.addEventListener('click', () => { document.getElementById('mobile-search')?.focus(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-    // Menu
-    function openMenu() {
-      document.getElementById('menu-drawer').classList.add('open');
-      document.getElementById('menu-backdrop').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeMenu() {
-      document.getElementById('menu-drawer').classList.remove('open');
-      document.getElementById('menu-backdrop').classList.remove('open');
-      document.body.style.overflow = '';
-    }
+    function openMenu() { document.getElementById('menu-drawer').classList.add('open'); document.getElementById('menu-backdrop').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMenu() { document.getElementById('menu-drawer').classList.remove('open'); document.getElementById('menu-backdrop').classList.remove('open'); document.body.style.overflow = ''; }
     document.getElementById('menu-btn')?.addEventListener('click', openMenu);
     document.getElementById('close-menu')?.addEventListener('click', closeMenu);
     document.getElementById('menu-backdrop')?.addEventListener('click', closeMenu);
 
-    // Events
     document.getElementById('cart-btn')?.addEventListener('click', openCart);
     document.getElementById('bottom-cart')?.addEventListener('click', openCart);
     document.getElementById('close-cart')?.addEventListener('click', closeCart);
@@ -867,14 +977,12 @@
     document.getElementById('qv-backdrop')?.addEventListener('click', closeQuickView);
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeCart();
-        closeMenu();
-        closeQuickView();
-      }
+      if (e.key === 'Escape') { closeCart(); closeMenu(); closeQuickView(); }
     });
 
     // Init
+    initCampaignVisuals();
+    initReveal();
     updateCounts();
     loadCategories();
     loadProducts();
