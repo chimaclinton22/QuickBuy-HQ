@@ -85,23 +85,16 @@
     .section-header-fashion { background: linear-gradient(90deg, #be185d, #ec4899); }
     .section-header-home { background: linear-gradient(90deg, #15803d, #22c55e); }
 
-    /* Image animations */
     .hero-slide { transition: opacity 0.7s ease; }
     .hero-slide img { transition: transform 8s ease; }
     .hero-slide.active img { transform: scale(1.06); }
 
     .promo-banner { overflow: hidden; }
-    .promo-banner img {
-      transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
+    .promo-banner img { transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); }
     .promo-banner:hover img { transform: scale(1.04); }
 
     .campaign-rail-item {
-      width: 280px;
-      height: 140px;
-      border-radius: 12px;
-      overflow: hidden;
-      flex-shrink: 0;
+      width: 280px; height: 140px; border-radius: 12px; overflow: hidden; flex-shrink: 0;
     }
     @media (min-width: 640px) {
       .campaign-rail-item { width: 340px; height: 160px; }
@@ -110,19 +103,51 @@
     .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
+    /* Desktop rail arrows */
+    .rail-wrap { position: relative; }
+    .rail-arrow {
+      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      width: 38px;
+      height: 38px;
+      border-radius: 9999px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      align-items: center;
+      justify-content: center;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .rail-arrow:hover { background: #087EBC; color: white; border-color: #087EBC; }
+    .rail-arrow.prev { left: -6px; }
+    .rail-arrow.next { right: -6px; }
+    @media (min-width: 768px) {
+      .rail-arrow { display: flex; }
+    }
+
+    /* Stronger bottom nav */
+    .bottom-nav {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      box-shadow: 0 -6px 24px rgba(0,0,0,0.1);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .skeleton { animation: none; }
       .hero-slide img { transition: none; }
       .promo-banner img { transition: none; }
       .reveal { opacity: 1; transform: none; transition: none; }
-      * { transition: none !important; }
     }
   </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased pb-16 md:pb-0">
 
-  <!-- ========== ANNOUNCEMENT ========== -->
+  <!-- ANNOUNCEMENT -->
   <div class="bg-slate-900 text-slate-300 text-[10px] sm:text-[11px] py-1.5">
     <div class="max-w-7xl mx-auto px-3 flex justify-between items-center gap-2">
       <span class="flex items-center gap-1"><i class="fa-solid fa-truck-fast text-orange-400 text-[10px]"></i> Free shipping over ₦50,000</span>
@@ -131,7 +156,7 @@
     </div>
   </div>
 
-  <!-- ========== HEADER ========== -->
+  <!-- HEADER -->
   <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-3">
       <div class="flex items-center justify-between h-12 sm:h-14 gap-2">
@@ -181,7 +206,7 @@
     </div>
   </header>
 
-  <!-- ========== MOBILE SIDE MENU ========== -->
+  <!-- MOBILE SIDE MENU -->
   <div id="menu-backdrop" class="drawer-backdrop fixed inset-0 bg-black/40 z-[80]"></div>
   <div id="menu-drawer" class="drawer-left fixed top-0 left-0 h-full w-[280px] max-w-[85vw] bg-white z-[90] shadow-2xl flex flex-col">
     <div class="flex items-center justify-between px-4 py-3.5 border-b">
@@ -208,7 +233,7 @@
     </nav>
   </div>
 
-  <!-- ========== CATEGORY STRIP ========== -->
+  <!-- CATEGORY STRIP -->
   <section class="bg-white border-b border-slate-100 py-2.5">
     <div class="max-w-7xl mx-auto px-3">
       <div id="category-rail" class="rail gap-3.5">
@@ -222,11 +247,9 @@
     </div>
   </section>
 
-  <!-- ========== ANIMATED HERO ========== -->
+  <!-- HERO -->
   <section class="relative">
-    <div id="hero" class="relative h-[160px] sm:h-[240px] lg:h-[320px] overflow-hidden bg-slate-900">
-      <!-- Slides will be injected by JS using campaign images -->
-    </div>
+    <div id="hero" class="relative h-[160px] sm:h-[240px] lg:h-[320px] overflow-hidden bg-slate-900"></div>
     <div class="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10" id="hero-dots"></div>
     <button id="hero-prev" class="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/20 backdrop-blur text-white items-center justify-center hover:bg-white/40 transition z-10">
       <i class="fa-solid fa-chevron-left text-sm"></i>
@@ -236,7 +259,7 @@
     </button>
   </section>
 
-  <!-- ========== FLASH SALE ========== -->
+  <!-- FLASH SALE -->
   <section id="flash-sale" class="max-w-7xl mx-auto px-3 py-4 sm:py-6 reveal">
     <div class="section-header-flash rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <div class="flex items-center gap-2">
@@ -248,15 +271,19 @@
       </div>
       <a href="shop.html?deals=1" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="flash-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('flash-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="flash-rail" class="rail">
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+      </div>
+      <button class="rail-arrow next" onclick="scrollRail('flash-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== PROMO BANNER 1 ========== -->
+  <!-- PROMO BANNER 1 -->
   <section class="max-w-7xl mx-auto px-3 py-2 reveal">
     <a href="shop.html?category=electronics" class="promo-banner relative block rounded-xl overflow-hidden h-[120px] sm:h-[160px]">
       <img id="promo-img-1" src="" alt="Campaign" class="w-full h-full object-cover" loading="lazy">
@@ -270,424 +297,237 @@
     </a>
   </section>
 
-  <!-- ========== TOP SELLERS ========== -->
+  <!-- TOP SELLERS -->
   <section id="top-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-top rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Top Sellers</h2>
       <a href="shop.html" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="top-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('top-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="top-rail" class="rail">
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+      </div>
+      <button class="rail-arrow next" onclick="scrollRail('top-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== CAMPAIGN IMAGE RAIL ========== -->
-  <section class="max-w-7xl mx-auto px-3 py-3 sm:py-4 reveal">
-    <div class="flex items-center justify-between mb-2.5">
-      <h2 class="text-sm sm:text-base font-black text-slate-900">Featured Campaigns</h2>
-    </div>
-    <div id="campaign-rail" class="rail gap-3"></div>
-  </section>
-
-  <!-- ========== TRENDING ========== -->
+  <!-- TRENDING -->
   <section id="trending-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-trend rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Trending Now</h2>
       <a href="shop.html" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="trending-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('trending-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="trending-rail" class="rail">
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+        <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+      </div>
+      <button class="rail-arrow next" onclick="scrollRail('trending-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== LARGE PROMO BANNER ========== -->
-  <section class="max-w-7xl mx-auto px-3 py-2 reveal">
-    <a href="shop.html?category=phones" class="promo-banner relative block rounded-xl overflow-hidden h-[140px] sm:h-[190px]">
-      <img id="promo-img-2" src="" alt="Campaign" class="w-full h-full object-cover" loading="lazy">
-      <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent flex items-center px-5 sm:px-8">
-        <div class="text-white">
-          <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-orange-400 mb-0.5">Hot Picks</p>
-          <h3 class="text-sm sm:text-xl font-black mb-1">Phones & Accessories</h3>
-          <span class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold bg-orange-500 px-2.5 py-1 rounded-lg">Explore <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
-        </div>
-      </div>
-    </a>
-  </section>
-
-  <!-- ========== ELECTRONICS ========== -->
+  <!-- ELECTRONICS -->
   <section id="electronics-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-elec rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Electronics</h2>
-      <a href="shop.html?category=electronics" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
+      <a href="shop.html?category=electronics" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="electronics-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-    </div>
-  </section>
-
-  <!-- ========== PROMO CARD ========== -->
-  <section class="max-w-7xl mx-auto px-3 py-2 reveal">
-    <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
-      <a href="shop.html?category=fashion" class="promo-banner relative block rounded-xl overflow-hidden h-[110px] sm:h-[140px]">
-        <img id="promo-img-3" src="" alt="Fashion" class="w-full h-full object-cover" loading="lazy">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-3">
-          <span class="text-white text-xs sm:text-sm font-bold">Fashion Picks</span>
-        </div>
-      </a>
-      <a href="shop.html?category=home-living" class="promo-banner relative block rounded-xl overflow-hidden h-[110px] sm:h-[140px]">
-        <img id="promo-img-4" src="" alt="Home" class="w-full h-full object-cover" loading="lazy">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-3">
-          <span class="text-white text-xs sm:text-sm font-bold">Home Essentials</span>
-        </div>
-      </a>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('electronics-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="electronics-rail" class="rail"></div>
+      <button class="rail-arrow next" onclick="scrollRail('electronics-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== PHONES ========== -->
+  <!-- PHONES -->
   <section id="phones-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-phones rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Phones</h2>
-      <a href="shop.html?category=phones" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
+      <a href="shop.html?category=phones" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="phones-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('phones-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="phones-rail" class="rail"></div>
+      <button class="rail-arrow next" onclick="scrollRail('phones-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== FASHION ========== -->
+  <!-- FASHION -->
   <section id="fashion-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-fashion rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Fashion</h2>
-      <a href="shop.html?category=fashion" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
+      <a href="shop.html?category=fashion" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="fashion-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('fashion-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="fashion-rail" class="rail"></div>
+      <button class="rail-arrow next" onclick="scrollRail('fashion-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== SECOND CAMPAIGN RAIL ========== -->
-  <section class="max-w-7xl mx-auto px-3 py-3 sm:py-4 reveal">
-    <div id="campaign-rail-2" class="rail gap-3"></div>
-  </section>
-
-  <!-- ========== HOME ========== -->
+  <!-- HOME -->
   <section id="home-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
     <div class="section-header-home rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
       <h2 class="text-sm sm:text-base font-black">Home & Living</h2>
-      <a href="shop.html?category=home-living" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">View All →</a>
+      <a href="shop.html?category=home-living" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="home-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('home-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="home-rail" class="rail"></div>
+      <button class="rail-arrow next" onclick="scrollRail('home-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== RECOMMENDED ========== -->
+  <!-- RECOMMENDED -->
   <section id="recommended-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal">
-    <div class="bg-slate-800 rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between text-white">
+    <div class="rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between bg-slate-800 text-white">
       <h2 class="text-sm sm:text-base font-black">Recommended For You</h2>
       <a href="shop.html" class="text-[11px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg transition">See All →</a>
     </div>
-    <div id="recommended-rail" class="rail">
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
-      <div class="product-card"><div class="aspect-square skeleton rounded-xl mb-2"></div><div class="h-2.5 skeleton rounded w-3/4 mb-1"></div><div class="h-2.5 skeleton rounded w-1/2"></div></div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('recommended-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="recommended-rail" class="rail"></div>
+      <button class="rail-arrow next" onclick="scrollRail('recommended-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== RECENTLY VIEWED ========== -->
-  <section id="recent-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 hidden reveal">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-sm sm:text-base font-black text-slate-900">Recently Viewed</h2>
+  <!-- RECENTLY VIEWED -->
+  <section id="recent-section" class="max-w-7xl mx-auto px-3 py-3 sm:py-5 reveal hidden">
+    <div class="rounded-xl px-3.5 py-2.5 mb-3 flex items-center justify-between bg-slate-700 text-white">
+      <h2 class="text-sm sm:text-base font-black">Recently Viewed</h2>
     </div>
-    <div id="recent-rail" class="rail"></div>
-  </section>
-
-  <!-- ========== WHY ========== -->
-  <section class="bg-white py-6 sm:py-8 mt-2">
-    <div class="max-w-7xl mx-auto px-3">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-        <div>
-          <div class="w-10 h-10 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-truck-fast text-sm"></i></div>
-          <p class="font-bold text-[11px] sm:text-xs text-slate-900">Fast Delivery</p>
-          <p class="text-[10px] text-slate-500">Across Nigeria</p>
-        </div>
-        <div>
-          <div class="w-10 h-10 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-shield-halved text-sm"></i></div>
-          <p class="font-bold text-[11px] sm:text-xs text-slate-900">Secure Checkout</p>
-          <p class="text-[10px] text-slate-500">100% Protected</p>
-        </div>
-        <div>
-          <div class="w-10 h-10 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-certificate text-sm"></i></div>
-          <p class="font-bold text-[11px] sm:text-xs text-slate-900">Quality Products</p>
-          <p class="text-[10px] text-slate-500">Verified items</p>
-        </div>
-        <div>
-          <div class="w-10 h-10 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center mx-auto mb-2"><i class="fa-solid fa-rotate-left text-sm"></i></div>
-          <p class="font-bold text-[11px] sm:text-xs text-slate-900">Easy Returns</p>
-          <p class="text-[10px] text-slate-500">Hassle free</p>
-        </div>
-      </div>
+    <div class="rail-wrap">
+      <button class="rail-arrow prev" onclick="scrollRail('recent-rail', -1)" aria-label="Previous"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+      <div id="recent-rail" class="rail"></div>
+      <button class="rail-arrow next" onclick="scrollRail('recent-rail', 1)" aria-label="Next"><i class="fa-solid fa-chevron-right text-sm"></i></button>
     </div>
   </section>
 
-  <!-- ========== FOOTER ========== -->
-  <footer class="bg-slate-900 text-slate-400">
-    <div class="max-w-7xl mx-auto px-3 py-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 mt-8">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
-          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-7 mb-2.5 object-contain brightness-0 invert opacity-90">
-          <p class="text-xs leading-relaxed">Your trusted online store for quality products and fast delivery across Nigeria.</p>
+          <img src="https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand" alt="QuickBuy HQ" class="h-8 mb-3 object-contain brightness-0 invert opacity-90">
+          <p class="text-sm leading-relaxed">Your trusted online store for quality products and fast delivery across Nigeria.</p>
         </div>
         <div>
-          <h4 class="text-white font-bold text-[11px] uppercase tracking-wider mb-2.5">Shop</h4>
-          <ul class="space-y-1.5 text-xs">
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Shop</h4>
+          <ul class="space-y-2 text-sm">
             <li><a href="shop.html" class="hover:text-white transition">All Products</a></li>
-            <li><a href="shop.html?deals=1" class="hover:text-white transition">Deals</a></li>
+            <li><a href="deals.html" class="hover:text-white transition">Deals</a></li>
             <li><a href="categories.html" class="hover:text-white transition">Categories</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="text-white font-bold text-[11px] uppercase tracking-wider mb-2.5">Support</h4>
-          <ul class="space-y-1.5 text-xs">
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Support</h4>
+          <ul class="space-y-2 text-sm">
             <li><a href="track-order.html" class="hover:text-white transition">Track Order</a></li>
             <li><a href="contact.html" class="hover:text-white transition">Contact</a></li>
             <li><a href="faq.html" class="hover:text-white transition">FAQ</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="text-white font-bold text-[11px] uppercase tracking-wider mb-2.5">Contact</h4>
-          <ul class="space-y-1.5 text-xs">
-            <li>+234 801 234 5678</li>
+          <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Contact</h4>
+          <ul class="space-y-2 text-sm">
+            <li>+234 810 416 8760</li>
             <li>support@quickbuyhq.com</li>
             <li>Lagos, Nigeria</li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="border-t border-slate-800 py-3.5 text-center text-[11px] text-slate-500">© 2026 QuickBuy HQ. All rights reserved.</div>
+    <div class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">© 2026 QuickBuy HQ. All rights reserved.</div>
   </footer>
 
-  <!-- ========== MOBILE BOTTOM NAV ========== -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex items-center justify-around h-14">
-    <a href="index.html" class="flex flex-col items-center gap-0.5 text-brand-blue">
-      <i class="fa-solid fa-house text-lg"></i>
-      <span class="text-[9px] font-semibold">Home</span>
-    </a>
-    <a href="categories.html" class="flex flex-col items-center gap-0.5 text-slate-500">
-      <i class="fa-solid fa-th-large text-lg"></i>
-      <span class="text-[9px] font-medium">Categories</span>
-    </a>
-    <button id="bottom-search" class="flex flex-col items-center gap-0.5 text-slate-500">
-      <i class="fa-solid fa-magnifying-glass text-lg"></i>
-      <span class="text-[9px] font-medium">Search</span>
-    </button>
-    <a href="wishlist.html" class="relative flex flex-col items-center gap-0.5 text-slate-500">
-      <i class="fa-regular fa-heart text-lg"></i>
-      <span class="text-[9px] font-medium">Wishlist</span>
-      <span id="bottom-wish-count" class="absolute -top-0.5 right-1 bg-red-500 text-white text-[8px] font-bold h-3.5 min-w-[14px] rounded-full flex items-center justify-center px-0.5 hidden">0</span>
-    </a>
-    <button id="bottom-cart" class="relative flex flex-col items-center gap-0.5 text-slate-500">
-      <i class="fa-solid fa-bag-shopping text-lg"></i>
-      <span class="text-[9px] font-medium">Cart</span>
-      <span id="bottom-cart-count" class="absolute -top-0.5 right-1 bg-red-500 text-white text-[8px] font-bold h-3.5 min-w-[14px] rounded-full flex items-center justify-center px-0.5 hidden">0</span>
-    </button>
+  <!-- STRONG MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200">
+    <div class="flex items-center justify-around h-14">
+      <a href="index.html" class="flex flex-col items-center justify-center gap-0.5 text-brand-blue w-16">
+        <i class="fa-solid fa-house text-lg"></i>
+        <span class="text-[10px] font-semibold">Home</span>
+      </a>
+      <a href="categories.html" class="flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-brand-blue w-16 transition">
+        <i class="fa-solid fa-th-large text-lg"></i>
+        <span class="text-[10px] font-medium">Categories</span>
+      </a>
+      <button id="bottom-search" class="flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-brand-blue w-16 transition">
+        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        <span class="text-[10px] font-medium">Search</span>
+      </button>
+      <a href="wishlist.html" class="relative flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-brand-blue w-16 transition">
+        <i class="fa-regular fa-heart text-lg"></i>
+        <span class="text-[10px] font-medium">Wishlist</span>
+        <span id="bottom-wish-count" class="absolute top-0 right-2 bg-red-500 text-white text-[9px] font-bold h-4 min-w-[16px] rounded-full flex items-center justify-center px-0.5 hidden">0</span>
+      </a>
+      <button id="bottom-cart" class="relative flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-brand-blue w-16 transition">
+        <i class="fa-solid fa-bag-shopping text-lg"></i>
+        <span class="text-[10px] font-medium">Cart</span>
+        <span id="bottom-cart-count" class="absolute top-0 right-2 bg-red-500 text-white text-[9px] font-bold h-4 min-w-[16px] rounded-full flex items-center justify-center px-0.5 hidden">0</span>
+      </button>
+    </div>
   </nav>
 
-  <!-- ========== CART DRAWER ========== -->
-  <div id="cart-backdrop" class="drawer-backdrop fixed inset-0 bg-black/40 z-[60]"></div>
-  <div id="cart-drawer" class="drawer fixed top-0 right-0 h-full w-full max-w-md bg-white z-[70] shadow-2xl flex flex-col">
+  <!-- CART DRAWER -->
+  <div id="cart-backdrop" class="drawer-backdrop fixed inset-0 bg-black/40 z-[80]"></div>
+  <div id="cart-drawer" class="drawer fixed top-0 right-0 h-full w-full max-w-md bg-white z-[90] shadow-2xl flex flex-col">
     <div class="flex items-center justify-between px-4 py-3.5 border-b">
-      <h3 class="font-bold text-base">Your Cart</h3>
+      <h3 class="font-bold text-slate-900">Your Cart</h3>
       <button id="close-cart" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div id="cart-items" class="flex-1 overflow-y-auto p-3.5 space-y-3"></div>
-    <div class="border-t p-4 space-y-2.5">
-      <div class="flex justify-between font-bold text-base"><span>Subtotal</span><span id="cart-subtotal">₦0</span></div>
-      <a href="cart.html" class="block w-full bg-brand-blue hover:bg-brand-dark text-white text-center font-bold py-3 rounded-xl transition text-sm">View Cart</a>
-      <a href="checkout.html" class="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center font-bold py-3 rounded-xl transition text-sm">Checkout</a>
-    </div>
-  </div>
-
-  <!-- ========== QUICK VIEW ========== -->
-  <div id="qv-backdrop" class="modal-backdrop fixed inset-0 bg-black/50 z-[80]"></div>
-  <div id="qv-modal" class="fixed inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center z-[90] pointer-events-none">
-    <div id="qv-panel" class="modal-panel bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto pointer-events-auto shadow-2xl">
-      <div class="sticky top-0 bg-white flex items-center justify-between px-4 py-3 border-b z-10">
-        <h3 class="font-bold text-sm">Quick View</h3>
-        <button id="close-qv" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+    <div class="border-t p-4 space-y-3">
+      <div class="flex justify-between font-bold text-slate-900">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">₦0</span>
       </div>
-      <div id="qv-content" class="p-4"></div>
+      <a href="checkout.html" class="block w-full bg-brand-blue hover:bg-brand-dark text-white text-center font-bold py-3 rounded-xl transition">Checkout</a>
     </div>
   </div>
 
-  <!-- ========== TOAST ========== -->
-  <div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl shadow-lg z-[100] opacity-0 pointer-events-none transition-opacity duration-300 flex items-center gap-2">
-    <i class="fa-solid fa-circle-check text-emerald-400"></i>
-    <span id="toast-msg">Added to cart</span>
+  <!-- QUICK VIEW -->
+  <div id="qv-backdrop" class="modal-backdrop fixed inset-0 bg-black/50 z-[80]"></div>
+  <div id="qv-panel" class="modal-panel fixed bottom-0 left-0 right-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md w-full bg-white z-[90] rounded-t-2xl sm:rounded-2xl shadow-2xl p-5 max-h-[90vh] overflow-y-auto">
+    <button id="close-qv" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+    <div id="qv-content"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition z-[100]">
+    <span id="toast-msg"></span>
   </div>
 
   <script>
-    // ========== CAMPAIGN IMAGES (exact Imgur assets) ==========
-    const CAMPAIGN_IMAGES = [
-      "https://i.imgur.com/3A5uPfF_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/InpiG63_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/zOm7NM1_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/vpqhFLp_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/Uq5cM5c_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/139kWVU_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/RcPe3EU_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/4efe22H_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/sVxOClF_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/8691uQW_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/T6R4dGQ_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/7hc1gMV_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/lq3hVzg_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/iqSddFX_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/o6ciclb_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/olfZns2_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/ia5YtGA_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/NtSjUV6_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/V5x97au_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/VNTPs91_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/bnjXcwp_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/Azajpdq_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/MRbJDem_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/J7g3znR_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/29XN5Ci_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/yFH7NPx_d.webp?maxwidth=1520&fidelity=grand",
-      "https://i.imgur.com/rln20Md_d.webp?maxwidth=1520&fidelity=grand",
-      "https://i.imgur.com/xR2k4Xk_d.webp?maxwidth=760&fidelity=grand",
-      "https://i.imgur.com/WLvH8JZ_d.webp?maxwidth=1520&fidelity=grand",
-      "https://i.imgur.com/bhDrDGg_d.webp?maxwidth=760&fidelity=grand"
-    ];
-
     const SUPABASE_URL = "https://zflruqzsbmiwvslcured.supabase.co";
     const SUPABASE_KEY = "sb_publishable_6lR4Oh7YBMnPBxEx0Siy4A_QpTG8PHC";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    const CAMPAIGN_IMAGES = [
+      "https://i.imgur.com/3A5uPfF_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/InpiG63_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/yFH7NPx_d.webp?maxwidth=1520&fidelity=grand",
+      "https://i.imgur.com/vozqi5x_d.webp?maxwidth=760&fidelity=grand",
+      "https://i.imgur.com/bhDrDGg_d.webp?maxwidth=760&fidelity=grand"
+    ];
+
+    let allProducts = [];
     let cart = JSON.parse(localStorage.getItem('qb_cart') || '[]');
     let wishlist = JSON.parse(localStorage.getItem('qb_wishlist') || '[]');
     let recentlyViewed = JSON.parse(localStorage.getItem('qb_recent') || '[]');
-    let allProducts = [];
-    let heroIdx = 0;
-    let heroTimer = null;
 
-    // ========== INIT CAMPAIGN VISUALS ==========
-    function initCampaignVisuals() {
-      // Hero slides (use high-res + strong images)
-      const heroImages = [CAMPAIGN_IMAGES[25], CAMPAIGN_IMAGES[26], CAMPAIGN_IMAGES[28], CAMPAIGN_IMAGES[0], CAMPAIGN_IMAGES[3]];
-      const heroTitles = [
-        { sub: 'New Season', title: 'Everything You Need.<br><span class="text-orange-400">Delivered Fast.</span>', cta: 'Shop Now', href: 'shop.html' },
-        { sub: 'Limited Time', title: 'Flash Deals<br>Up to 40% Off', cta: 'View Deals', href: '#flash-sale' },
-        { sub: 'Smart Tech', title: 'Upgrade Your<br>Everyday Life', cta: 'Explore Tech', href: 'shop.html?category=electronics' },
-        { sub: 'Hot Picks', title: 'Phones & Gadgets<br>You\'ll Love', cta: 'Shop Phones', href: 'shop.html?category=phones' },
-        { sub: 'Style Edit', title: 'Fresh Fashion<br>Arrivals', cta: 'Shop Fashion', href: 'shop.html?category=fashion' }
-      ];
-
-      const heroEl = document.getElementById('hero');
-      const dotsEl = document.getElementById('hero-dots');
-      heroEl.innerHTML = heroImages.map((src, i) => `
-        <div class="hero-slide absolute inset-0 ${i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}" data-i="${i}">
-          <img src="${src}" alt="Campaign" class="absolute inset-0 w-full h-full object-cover" ${i === 0 ? '' : 'loading="lazy"'}>
-          <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
-          <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center">
-            <div class="text-white">
-              <p class="text-orange-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-0.5">${heroTitles[i].sub}</p>
-              <h1 class="text-base sm:text-2xl lg:text-3xl font-black leading-tight mb-1.5">${heroTitles[i].title}</h1>
-              <a href="${heroTitles[i].href}" class="inline-flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-lg text-[11px] sm:text-sm transition">${heroTitles[i].cta} <i class="fa-solid fa-arrow-right text-[9px]"></i></a>
-            </div>
-          </div>
-        </div>
-      `).join('');
-
-      dotsEl.innerHTML = heroImages.map((_, i) => `
-        <button class="hero-dot w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/40'}" data-i="${i}"></button>
-      `).join('');
-
-      document.querySelectorAll('.hero-dot').forEach(d => d.addEventListener('click', () => showHero(+d.dataset.i)));
-      document.getElementById('hero-prev')?.addEventListener('click', () => showHero((heroIdx - 1 + heroImages.length) % heroImages.length));
-      document.getElementById('hero-next')?.addEventListener('click', () => showHero((heroIdx + 1) % heroImages.length));
-      startHeroTimer();
-
-      // Promo banners
-      document.getElementById('promo-img-1').src = CAMPAIGN_IMAGES[25];
-      document.getElementById('promo-img-2').src = CAMPAIGN_IMAGES[26];
-      document.getElementById('promo-img-3').src = CAMPAIGN_IMAGES[4];
-      document.getElementById('promo-img-4').src = CAMPAIGN_IMAGES[27];
-
-      // Campaign rails
-      const rail1 = document.getElementById('campaign-rail');
-      const rail2 = document.getElementById('campaign-rail-2');
-      const set1 = CAMPAIGN_IMAGES.slice(5, 13);
-      const set2 = CAMPAIGN_IMAGES.slice(13, 21);
-
-      rail1.innerHTML = set1.map(src => `
-        <a href="shop.html" class="campaign-rail-item relative block">
-          <img src="${src}" alt="Campaign" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.style.display='none'">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-        </a>
-      `).join('');
-
-      rail2.innerHTML = set2.map(src => `
-        <a href="shop.html" class="campaign-rail-item relative block">
-          <img src="${src}" alt="Campaign" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.style.display='none'">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-        </a>
-      `).join('');
+    function scrollRail(id, direction) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollBy({ left: direction * el.clientWidth * 0.75, behavior: 'smooth' });
     }
 
-    function showHero(i) {
-      const slides = document.querySelectorAll('.hero-slide');
-      const dots = document.querySelectorAll('.hero-dot');
-      slides.forEach((s, idx) => {
-        s.classList.toggle('opacity-100', idx === i);
-        s.classList.toggle('opacity-0', idx !== i);
-        s.classList.toggle('pointer-events-none', idx !== i);
-        s.classList.toggle('active', idx === i);
-      });
-      dots.forEach((d, idx) => {
-        d.classList.toggle('bg-white', idx === i);
-        d.classList.toggle('bg-white/40', idx !== i);
-      });
-      heroIdx = i;
-      startHeroTimer();
-    }
-
-    function startHeroTimer() {
-      clearInterval(heroTimer);
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const total = document.querySelectorAll('.hero-slide').length;
-      heroTimer = setInterval(() => showHero((heroIdx + 1) % total), 5200);
-    }
-
-    // Scroll reveal
-    function initReveal() {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-      }, { threshold: 0.12 });
-      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-    }
-
-    // ========== COUNTS ==========
     function updateCounts() {
       const cartQty = cart.reduce((s, i) => s + (i.quantity || 1), 0);
       document.getElementById('cart-count').textContent = cartQty;
@@ -747,8 +587,8 @@
         const el = document.getElementById('category-rail');
         if (!data?.length) { el.innerHTML = '<p class="text-xs text-slate-400 py-2">No categories</p>'; return; }
         const defaults = {
-          electronics: CAMPAIGN_IMAGES[19], phones: CAMPAIGN_IMAGES[3], fashion: CAMPAIGN_IMAGES[4],
-          'home-living': CAMPAIGN_IMAGES[25], beauty: CAMPAIGN_IMAGES[8], accessories: CAMPAIGN_IMAGES[23]
+          electronics: CAMPAIGN_IMAGES[0], phones: CAMPAIGN_IMAGES[1], fashion: CAMPAIGN_IMAGES[2],
+          'home-living': CAMPAIGN_IMAGES[3], beauty: CAMPAIGN_IMAGES[4], accessories: CAMPAIGN_IMAGES[0]
         };
         el.innerHTML = data.map(c => `
           <a href="shop.html?category=${c.slug}" class="cat-item flex flex-col items-center gap-1 group">
@@ -953,6 +793,47 @@
     function doSearch(q) {
       q = (q || '').trim();
       window.location.href = q ? `shop.html?q=${encodeURIComponent(q)}` : 'shop.html';
+    }
+
+    function initCampaignVisuals() {
+      const hero = document.getElementById('hero');
+      const dots = document.getElementById('hero-dots');
+      const slides = CAMPAIGN_IMAGES.slice(0, 4);
+      hero.innerHTML = slides.map((src, i) => `
+        <div class="hero-slide absolute inset-0 ${i === 0 ? 'active opacity-100' : 'opacity-0'}">
+          <img src="${src}" class="w-full h-full object-cover" alt="Campaign">
+          <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent"></div>
+        </div>`).join('');
+      dots.innerHTML = slides.map((_, i) => `
+        <button class="w-2 h-2 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/40'} transition" data-idx="${i}"></button>`).join('');
+
+      let current = 0;
+      const show = (idx) => {
+        current = idx;
+        hero.querySelectorAll('.hero-slide').forEach((s, i) => {
+          s.classList.toggle('active', i === idx);
+          s.classList.toggle('opacity-100', i === idx);
+          s.classList.toggle('opacity-0', i !== idx);
+        });
+        dots.querySelectorAll('button').forEach((d, i) => {
+          d.classList.toggle('bg-white', i === idx);
+          d.classList.toggle('bg-white/40', i !== idx);
+        });
+      };
+      setInterval(() => show((current + 1) % slides.length), 5000);
+      document.getElementById('hero-prev')?.addEventListener('click', () => show((current - 1 + slides.length) % slides.length));
+      document.getElementById('hero-next')?.addEventListener('click', () => show((current + 1) % slides.length));
+      dots.querySelectorAll('button').forEach(b => b.addEventListener('click', () => show(+b.dataset.idx)));
+
+      const promo = document.getElementById('promo-img-1');
+      if (promo) promo.src = CAMPAIGN_IMAGES[1] || CAMPAIGN_IMAGES[0];
+    }
+
+    function initReveal() {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
     }
 
     // Events
